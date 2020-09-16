@@ -8,6 +8,72 @@
   <body>
     <script>
 
+      let dateHandler = function (weekDay, month, date, year, time) {
+        let dateString = '';
+        if (weekDay === 0) {
+          dateString += 'Sun, ';
+        } else if (weekDay === 1) {
+          dateString += 'Mon, ';
+        } else if (weekDay === 2) {
+          dateString += 'Tues, ';
+        } else if (weekDay === 3) {
+          dateString += 'Wed, ';
+        } else if (weekDay === 4) {
+          dateString +=  'Thurs, ';
+        } else if (weekDay === 5) {
+          dateString += 'Fri, ';
+        } else if (weekDay === 6) {
+          dateString += 'Sat, ';
+        } else if (weekDay === 7) {
+          dateString += 'Sun, '
+        } else {
+          alert('weekday value not valid');
+        }
+
+        if (month === 0) {
+          dateString += 'Jan ';
+        } else if (month === 1) {
+          dateString += 'Feb ';
+        } else if (month === 2) {
+          dateString += 'Mar ';
+        } else if (month === 3) {
+          dateString += 'April ';
+        } else if (month === 4) {
+          dateString += 'May ';
+        } else if (month === 5) {
+          dateString += 'June ';
+        } else if (month === 6) {
+          dateString += 'July ';
+        } else if (month === 7) {
+          dateString += 'August ';
+        } else if (month === 8) {
+          dateString += 'Sept ';
+        } else if (month === 9) {
+          dateString += 'Oct ';
+        } else if (month === 10) {
+          dateString += 'Nov ';
+        } else if (month === 11) {
+          dateString += 'Dec ';
+        } else {
+          alert('month value is not valid');
+        }
+
+        dateString += (date + ', ' + year + ' || ' + time);
+
+        return dateString;
+
+      }
+
+            //Makes links clickable-
+      $('a').on('click', function() {
+        let handle = (event.target.innerHTML).split('');
+        handle = handle.slice(0, handle.length - 2);
+        handle.shift();
+        let userHandle = handle.join('');
+        $('.sortedNameDeclarations').removeClass('js-is-displayed')
+        $('.' + userHandle).addClass('js-is-displayed');
+      });
+
 
       $(document).ready(function(){
         let $body = $('body');
@@ -15,55 +81,110 @@
 
         let $tweetno11;
 
+        const stylizeTweet = function(user, message, time) {
+            //Stylized User
+            let $user = $('<a></a>').text(user).attr('class', 'tweet-handle').addClass('zero-margin');
+
+            //Stylized Message
+            let $message = $('<p></p>').text(message).attr('class', 'tweet-timeline-message').addClass('zero-margin');
+
+            //Stylized Time
+            let $time = $('<p></p>').text(time).attr('class', 'tweet-time').addClass('zero-margin');
+
+            let $stylizedTweet = $($user.add($message).add($time));
+            return $stylizedTweet;
+        }
+
         let $oneMoreTweetBtn = $('<button></button>').text('More Tweets!').on('click', function() {
           generateRandomTweet();
           if (!$tweetno11) {
             //Add new html
-            $tweetno11 = $('<div></div>').attr('id', 'tweetno11');
+            $tweetno11 = $('<div></div>').attr({'class': 'tweet-container', 'id': 'tweetno11'});
             $($tweetno11).appendTo($tweetTimeline)
+            //tweetno10 borderbottom
+            $('#tweetno10').css('border-bottom', 'none')
           }
 
-          //return;
           //This part introduces a new tweet and moves all the tweets down in the stack-
             let saverArray =[];
             for (let i = 0; i <= 11; i++) {
-              saverArray.push($('#tweetno' + i).html());
-            if (i === 0) {
-                $('#tweetno' + i).text(streams.home[streams.home.length - 1].user + streams.home[streams.home.length - 1].message + ' ' + streams.home[streams.home.length - 1].created_at);
+              let tweet = streams.home[streams.home.length - 1];
+
+              let user = $('#tweetno' + i).children('a.tweet-handle').text();
+              let message = $('#tweetno' + i).children('p.tweet-timeline-message').text();
+
+              let $time = $('#tweetno' + i).children('p.tweet-time').text();
+
+              saverArray.push(stylizeTweet(user, message, $time));
+
+
+          if (i === 0) {
+            //Handling the Time for new Tweet~
+            let d = tweet.created_at;
+            let time = d.toLocaleTimeString();
+            let year = d.getFullYear();
+            let month = d.getMonth();
+            let date = d.getDate();
+            let weekDay = d.getDay();
+            let fullDate = dateHandler(weekDay, month, date, year, time);
+
+            $('#tweetno' + i).html(stylizeTweet('@' + tweet.user + ': ', tweet.message, fullDate));
+              } else {
+                $('#tweetno' + i).html(saverArray[i - 1]);
               }
-              $('#tweetno' + i).html(saverArray[i - 1])
-            }
+          }
+
+      //Makes links clickable-
+      $('a').on('click', function() {
+        let handle = (event.target.innerHTML).split('');
+        handle = handle.slice(0, handle.length - 2);
+        handle.shift();
+        let userHandle = handle.join('');
+        $('.sortedNameDeclarations').removeClass('js-is-displayed')
+        $('.' + userHandle).addClass('js-is-displayed');
+      });
 
       }).appendTo($body);
 
+      //The basic Tweet Timeline
         let $tweetTimeline = $('<div></div>').addClass('test-border-one').attr('class', 'tweet-timeline');
         let $tweetTimelineTitle = $('<h3></h3>').text('Tweet Timeline').attr('class', 'section-title')
 
         $tweetTimeline.append($tweetTimelineTitle);
-
         $tweetTimeline.appendTo($body);
 
         let index = 0;
         while(index < streams.home.length){
           let tweet = streams.home[index];
-          let $linkedHandle = $('<a></a>').text('@' + tweet.user + ': ')
-          let $tweet = $('<div></div>').attr('id', 'tweetno' + index).addClass('test-border-one');
-          let $tweetTime = $('<p></p>').text(streams.home[index].created_at).attr('class', 'tweet-time');
+          //Handling the Time
+          let d = tweet.created_at;
+          let time = d.toLocaleTimeString();
+          let year = d.getFullYear();
+          let month = d.getMonth();
+          let date = d.getDate();
+          let weekDay = d.getDay();
+          let fullDate = dateHandler(weekDay, month, date, year, time);
 
-          let $uniqTweet = $('<p></p>').text(tweet.message + ', ').addClass('js-inline-block');
 
-          $($linkedHandle).appendTo($tweet);
-          $($uniqTweet).appendTo($tweet);
-          $($tweetTime).appendTo($tweet);
-          $($tweet).children().addClass('zero-margin')
+          //Tweet Container:
+          let $tweet = $('<div></div>').html(stylizeTweet('@' + tweet.user +': ', tweet.message, fullDate)).attr({'class': 'tweet-container', 'id': 'tweetno' + index})
 
           $tweet.appendTo($tweetTimeline);
-
           index += 1;
         }
 
      //Line Break
      $('</br>').appendTo('body')
+
+
+
+
+
+
+
+
+
+
 
       //Sorted Section-----------
       let $sortedTweetsContainer = $('<div></div>')
@@ -102,6 +223,12 @@
       }
 
 
+
+
+      $sortedTweetsContainer.appendTo($body)
+
+
+
       //Makes links clickable-
       $('a').on('click', function() {
         let handle = (event.target.innerHTML).split('');
@@ -112,13 +239,7 @@
         $('.' + userHandle).addClass('js-is-displayed');
       });
 
-
-
-
-
-      $sortedTweetsContainer.appendTo($body)
-
-      });
+    });
 
 
     </script>

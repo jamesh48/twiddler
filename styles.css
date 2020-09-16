@@ -1,3 +1,6 @@
+body a {
+  cursor: pointer;
+}
 h2, h3, h4 {
   margin: 0;
 }
@@ -83,6 +86,27 @@ Font
   font-size: 12px;
 }
 
-#tweetno11 {
-  background-color: red;
+#tweetno3 {
+  background-color: lightgoldenrodyellow;
 }
+#tweetno11 {
+  background-color: lightgrey;
+  border: 1px solid grey;
+  border-top: 1px dashed grey;
+}
+
+.tweet-container {
+  border: 1px solid black;
+}
+.tweet-timeline-message {
+  display: inline-block;
+}
+a.tweethandle {
+   margin: 0;
+ }
+
+ .tweet-time-two {
+   display: inline-block;
+ }
+
+
