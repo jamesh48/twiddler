@@ -1,26 +1,125 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel='stylesheet' href='styles.css'>
     <script src="jquery.js"></script>
     <script src="dataGenerator.js"></script>
   </head>
   <body>
     <script>
 
+
       $(document).ready(function(){
-        var $body = $('body');
+        let $body = $('body');
         $body.html('');
 
-        var index = streams.home.length - 1;
-        while(index >= 0){
-          var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
-          index -= 1;
+        let $tweetno11;
+
+        let $oneMoreTweetBtn = $('<button></button>').text('More Tweets!').on('click', function() {
+          generateRandomTweet();
+          if (!$tweetno11) {
+            //Add new html
+            $tweetno11 = $('<div></div>').attr('id', 'tweetno11');
+            $($tweetno11).appendTo($tweetTimeline)
+          }
+
+          //return;
+          //This part introduces a new tweet and moves all the tweets down in the stack-
+            let saverArray =[];
+            for (let i = 0; i <= 11; i++) {
+              saverArray.push($('#tweetno' + i).html());
+            if (i === 0) {
+                $('#tweetno' + i).text(streams.home[streams.home.length - 1].user + streams.home[streams.home.length - 1].message + ' ' + streams.home[streams.home.length - 1].created_at);
+              }
+              $('#tweetno' + i).html(saverArray[i - 1])
+            }
+
+      }).appendTo($body);
+
+        let $tweetTimeline = $('<div></div>').addClass('test-border-one').attr('class', 'tweet-timeline');
+        let $tweetTimelineTitle = $('<h3></h3>').text('Tweet Timeline').attr('class', 'section-title')
+
+        $tweetTimeline.append($tweetTimelineTitle);
+
+        $tweetTimeline.appendTo($body);
+
+        let index = 0;
+        while(index < streams.home.length){
+          let tweet = streams.home[index];
+          let $linkedHandle = $('<a></a>').text('@' + tweet.user + ': ')
+          let $tweet = $('<div></div>').attr('id', 'tweetno' + index).addClass('test-border-one');
+          let $tweetTime = $('<p></p>').text(streams.home[index].created_at).attr('class', 'tweet-time');
+
+          let $uniqTweet = $('<p></p>').text(tweet.message + ', ').addClass('js-inline-block');
+
+          $($linkedHandle).appendTo($tweet);
+          $($uniqTweet).appendTo($tweet);
+          $($tweetTime).appendTo($tweet);
+          $($tweet).children().addClass('zero-margin')
+
+          $tweet.appendTo($tweetTimeline);
+
+          index += 1;
         }
 
+     //Line Break
+     $('</br>').appendTo('body')
+
+      //Sorted Section-----------
+      let $sortedTweetsContainer = $('<div></div>')
+
+      let $title = $('<h3></h3>').text('Sorted').addClass('js-is-underlined').attr('class', 'section-title');
+
+      $title.appendTo($sortedTweetsContainer);
+
+      for(let key in streams.users){
+
+        let $currentSortedTweetDeck = $('<div></div>').addClass('margin test-border-one').attr({'class': 'sortedNameDeclarations ' + key});
+
+        $($currentSortedTweetDeck).appendTo($sortedTweetsContainer);
+
+        //Tweeters Name
+        //these lines add the names:
+        let $currentNameDeclaration = $('<h4></h4>').text(key).addClass('test-border-two').attr('class', 'currentNameDeclarations');
+
+        $currentNameDeclaration.appendTo($currentSortedTweetDeck);
+
+        let $currentTweetStack = $('<div></div>').css('margin-bottom', '20px');
+        $currentTweetStack.appendTo($currentSortedTweetDeck);
+
+        //------------------------
+        //These lines add the tweets:
+        for (let i = streams.users[key].length - 1; i >= 0; i--) {
+          let currentTweet = JSON.stringify(streams.users[key][i].message);
+          let $currentUserTweet = $('<p></p>').text(currentTweet).addClass('js-is-italicized');
+
+          $currentUserTweet.appendTo($currentTweetStack);
+        }
+        //-------------------------
+
+        $('</br>').appendTo($currentTweetStack);
+
+      }
+
+
+      //Makes links clickable-
+      $('a').on('click', function() {
+        let handle = (event.target.innerHTML).split('');
+        handle = handle.slice(0, handle.length - 2);
+        handle.shift();
+        let userHandle = handle.join('');
+        $('.sortedNameDeclarations').removeClass('js-is-displayed')
+        $('.' + userHandle).addClass('js-is-displayed');
       });
+
+
+
+
+
+      $sortedTweetsContainer.appendTo($body)
+
+      });
+
 
     </script>
   </body>

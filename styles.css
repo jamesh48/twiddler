@@ -1,0 +1,88 @@
+h2, h3, h4 {
+  margin: 0;
+}
+
+a {
+  text-decoration: underline;
+  color: blue;
+}
+
+.js-is-underlined {
+  text-decoration: underline;
+}
+
+.js-is-center-aligned {
+  text-align: center;
+}
+
+.js-inline-block {
+  display: inline-block;
+}
+
+.sortedNameDeclarations {
+  display: none;
+  border: 3px solid black;
+  border-radius: 2%;
+}
+
+.currentNameDeclarations {
+  background-color: aquamarine;
+  padding: 5px 0 2px 5px;
+  text-decoration: underline;
+}
+
+/*
+============
+Testing Tools
+============
+*/
+.test-border-one {
+  border: 1px solid black;
+  border-radius: 2%;
+}
+
+.test-border-two {
+  border: 1px dashed blue;
+}
+
+.bg-red {
+  background-color: red;
+}
+
+/*
+============
+Font
+============
+*/
+
+.section-title {
+  margin-bottom: 10px;
+  text-align: center;
+}
+.js-is-italicized {
+  font-style: italic;
+}
+
+.margin {
+    margin: 10px 0 0 10px;
+}
+
+.zero-margin {
+  margin: 0;
+}
+
+.js-is-not-displayed {
+  display: none;
+}
+
+.js-is-displayed {
+  display: block;
+}
+
+.tweet-time {
+  font-size: 12px;
+}
+
+#tweetno11 {
+  background-color: red;
+}
