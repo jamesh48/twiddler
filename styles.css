@@ -76,6 +76,10 @@ a.tweet-handle {
    padding-left: 10px;
  }
 
+ .hash-handle {
+   margin: 0;
+ }
+
  .section-container {
    border: 1px solid darkslategrey;
    border-radius: 2%;
@@ -83,6 +87,7 @@ a.tweet-handle {
 
  .tweet-timeline-message {
   display: inline-block;
+  margin: 0;
 }
 
 .sorted-tweet-list-li {
@@ -103,6 +108,12 @@ a.tweet-handle {
   color:lightgrey;
   display: inline-block;
 }
+
+#itc11 .tweet-time {
+  font-size: 10px;
+  padding-left: 5px;
+}
+
 
 /*
 =====================
@@ -145,6 +156,27 @@ a.tweet-handle {
   padding-left: 25px;
 
 }
+
+/*
+=====================
+Hashtag Section
+=====================
+*/
+
+.hashhtag-deck {
+  border: 1px solid black;
+}
+
+.current-hashtag-stack {
+  border: 1px solid black;
+}
+
+.hashtag-name-declarations {
+  display: none;
+  color: white;
+  background-color: blue;
+}
+
 
 
 /*

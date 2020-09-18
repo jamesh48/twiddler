@@ -116,13 +116,21 @@
             let $user = $('<a></a>').text(user).attr('class', 'tweet-handle').addClass('zero-margin');
 
             //Stylized Message
-            let $message = $('<p></p>').text(message).attr('class', 'tweet-timeline-message').addClass('zero-margin');
-
+            message = message.split('');
+            if(message.indexOf('#') !== -1) {
+              let hashHandle = message.splice(message.indexOf('#')).join('')
+              let $hashHandle = $('<a></a>').attr('class', 'hash-handle').text(hashHandle);
+              let messageSansHash = message.join('')
+              message = $('<p></p>').attr('class', 'tweet-timeline-message').text(messageSansHash).add($hashHandle);
+            } else {
+              message = message.join('')
+              message = $('<p></p>').text(message).attr('class', 'tweet-timeline-message');
+            }
             //Stylized Time
             let $time = $('<p></p>').text(time).attr('class', 'tweet-time').addClass('zero-margin');
 
             let $unfortunateDiv = $('<div></div>').attr({'class': 'inner-tweet-container ' + userNameOnly, 'id': 'itc' + index});
-            let $stylizedTweet = $($unfortunateDiv.append($user.add($message).add($time)));
+            let $stylizedTweet = $($unfortunateDiv.append($user.add(message).add($time)));
             return $stylizedTweet;
         }
 
@@ -281,14 +289,15 @@ colorCoding();
 $('</br>').appendTo('body')
 
       //Sorted Section-----------
-      let $sortedTweetsContainer = $('<div></div>').attr({'id': 'sorted-timeline', 'class': 'section-container sorted-timeline'});
+      const $sortedTweetsContainer = $('<div></div>').attr({'id': 'sorted-timeline', 'class': 'section-container sorted-timeline'});
 
       let $title = $('<h3></h3>').text('Sorted').addClass('js-is-underlined').attr({'class': 'section-title', 'id': 'sorted-title'}).appendTo($sortedTweetsContainer);
 
       for(let key in streams.users){
-        let $currentSortedTweetDeck = $('<div></div>').addClass('margin test-border-one').attr({'class': 'sortedNameDeclarations ' + key});
+        let $currentSortedTweetDeck = $('<div></div>').addClass('test-border-one').attr({'class': 'sortedNameDeclarations ' + key});
 
         $($currentSortedTweetDeck).appendTo($sortedTweetsContainer);
+
         //Tweeters Name
         //these lines add the names:
 
@@ -302,6 +311,7 @@ $('</br>').appendTo('body')
         //These lines add the tweets:
         for (let i = 0; i < streams.users[key].length; i++) {
           let tweet = streams.home[i];
+
           //Handling the Time
           let d = tweet.created_at;
           let time = d.toLocaleTimeString();
@@ -334,6 +344,15 @@ $('</br>').appendTo('body')
 
       //Makes links clickable-
       $('a').on('click', function() {
+        let aTest = event.target.innerHTML.split('');
+        if (aTest[0] === '#') {
+          aTest = aTest.splice(1)
+          aTest = aTest.join('');
+          $('.hashtag-name-declarations').removeClass('js-is-displayed');
+          $('.' + aTest).addClass('js-is-displayed');
+          $('#hashtag-sorted-title').text('-- #' + aTest + ' --').css({'color': '#FFFFFF', 'background-color': 'salmon'});
+          return;
+        }
         let userHandle = (event.target.innerHTML);
         userHandle = userHandle.split('');
         userHandle = userHandle.splice(0, userHandle.length - 2).join('');
@@ -348,6 +367,42 @@ $('</br>').appendTo('body')
         alphaColor = alphaColor.join('');
         $('#sorted-timeline').css({'background-color': alphaColor});
       });
+
+      //Hashtag Section-
+      const $hashtagTweetsContainer = $('<div></div>').attr('class', 'section-container hashtag-tweets-container').appendTo('body');
+
+
+      let $hashTagtitle = $('<h3></h3>').text('Hashtags Sorted').addClass('js-is-underlined').attr({'class': 'section-title', 'id': 'hashtag-sorted-title'}).appendTo($hashtagTweetsContainer);
+
+      //This for loop creates hashtag containers
+      for (let i = 0; i < tags.length; i++) {
+
+      //Removing the hash for the id & class...
+      let hashCheck = tags[i].split('');
+        if (hashCheck[0] === '#') {
+          hashCheck.shift()
+          hashCheck = hashCheck.join('');
+        } else {
+          hashCheck = hashCheck.join('')
+        }
+
+        let $currentSortedHashtagDeck = $('<div></div>').attr('class','hashtag-name-declarations ' + hashCheck)
+
+       $currentSortedHashtagDeck.appendTo($hashtagTweetsContainer);
+
+       let $currentHashTagStack = $('<div></div>').attr({'id': hashCheck + '-hashtag-stack', 'class': 'current-hashtag-stack'}).appendTo($currentSortedHashtagDeck);
+
+        for (let j = 0; j < streams.home.length; j++) {
+          let checkTag = streams.home[j].message;
+          checkTag = checkTag.split('');
+          if (checkTag.indexOf('#') !== -1) {
+            checkTag = checkTag.splice(checkTag.indexOf('#')).join('');
+            if (tags[i] === checkTag) {
+              $('<p></p>').text(streams.home[j].user + ': ' + streams.home[j].message).appendTo($currentHashTagStack);
+            }
+          }
+        }
+      }
 
       let coolButton = $('<button></button>').text('Test').on('click',
         function (){
