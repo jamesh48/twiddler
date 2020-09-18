@@ -10,34 +10,10 @@ a {
   color: blue;
 }
 
-.js-is-underlined {
-  text-decoration: underline;
-}
-
-.js-is-center-aligned {
-  text-align: center;
-}
-
-.js-inline-block {
-  display: inline-block;
-}
-
-.sortedNameDeclarations {
-  display: none;
-  border: 3px solid black;
-  border-radius: 2%;
-}
-
-.currentNameDeclarations {
-  background-color: aquamarine;
-  padding: 5px 0 2px 5px;
-  text-decoration: underline;
-}
-
 /*
-============
+=====================
 Testing Tools
-============
+=====================
 */
 .test-border-one {
   border: 1px solid black;
@@ -53,17 +29,14 @@ Testing Tools
 }
 
 /*
-============
+=====================
 Font
-============
+=====================
 */
 
 .section-title {
-  margin-bottom: 10px;
   text-align: center;
-}
-.js-is-italicized {
-  font-style: italic;
+  padding: 7.5px 0 10px 0;
 }
 
 .margin {
@@ -74,6 +47,111 @@ Font
   margin: 0;
 }
 
+/*
+=====================
+Tweet Timeline Section
+=====================
+*/
+.tweet-timeline-title {
+  background-color: royalblue;
+  color: white;
+  border: 4px solid darkslategray;
+  border-bottom: none;
+}
+
+.outer-tweet-container {
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
+  padding: 3.5px;
+}
+
+.inner-tweet-container p {
+  color: #FFFFFF;
+  padding: 3px;
+}
+
+a.tweet-handle {
+   margin: 0;
+   padding-left: 10px;
+ }
+
+ .section-container {
+   border: 1px solid darkslategrey;
+   border-radius: 2%;
+ }
+
+ .tweet-timeline-message {
+  display: inline-block;
+}
+
+.sorted-tweet-list-li {
+  font-style: italic;
+}
+
+/*-The 11th Tweet-*/
+#otc11 {
+  background-color: lightslategrey !important;
+}
+#itc11 {
+  background-color: rgba(0, 0, 0, 0.2) !important;
+  text-align: center;
+}
+
+#itc11 p, #itc11 a {
+  font-size: 12px;
+  color:lightgrey;
+  display: inline-block;
+}
+
+/*
+=====================
+ Sorted Section
+=====================
+ */
+
+ .sortedNameDeclarations {
+  display: none;
+  border-top: 1px solid black;
+}
+
+.sorted-individual-tweet-container p {
+  display: inline-block;
+}
+
+.current-tweet-stack {
+  margin-bottom: 20px;
+}
+
+.sorted-individual-tweet-container p.tweet-time {
+  text-decoration: underline;
+}
+
+.sorted-individual-tweet-container p.sorted-tweet-list-li {
+  margin-left: 5px;
+}
+
+.sorted-timeline {
+  margin-top: 20px;
+  border: 1px solid black;
+}
+
+.sorted-tweet-list-li {
+  color: lightslategrey;
+}
+/*Tweet Timeline and Sorted Timeline Date Styling*/
+.inner-tweet-container .tweet-time, .tweet-time {
+  font-size: 12px;
+  padding-left: 25px;
+
+}
+
+
+/*
+=====================
+Javascript Inline Style Classes
+=====================
+*/
 .js-is-not-displayed {
   display: none;
 }
@@ -82,31 +160,39 @@ Font
   display: block;
 }
 
-.tweet-time {
-  font-size: 12px;
+.js-is-italicized {
+  font-style: italic;
 }
 
-#tweetno3 {
-  background-color: lightgoldenrodyellow;
-}
-#tweetno11 {
-  background-color: lightgrey;
-  border: 1px solid grey;
-  border-top: 1px dashed grey;
+.js-is-bolded {
+  font-weight: 800;
 }
 
-.tweet-container {
-  border: 1px solid black;
+.js-is-hidden {
+  visibility: hidden;
 }
-.tweet-timeline-message {
+
+.js-is-underlined {
+  text-decoration: underline;
+}
+
+.js-is-center-aligned {
+  text-align: center;
+}
+
+.js-inline-block {
   display: inline-block;
 }
-a.tweethandle {
-   margin: 0;
- }
+/*
+=====================
+Buttons
+=====================
+*/
 
- .tweet-time-two {
-   display: inline-block;
- }
-
-
+.one-more-tweet-button {
+  width: 100%;
+  height: 50px;
+  background-color: royalblue;
+  color: white;
+  text-decoration: underline;
+}
