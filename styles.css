@@ -90,10 +90,6 @@ a.tweet-handle {
   margin: 0;
 }
 
-.sorted-tweet-list-li {
-  font-style: italic;
-}
-
 /*-The 11th Tweet-*/
 #otc11 {
   background-color: lightslategrey !important;
@@ -121,6 +117,10 @@ a.tweet-handle {
 =====================
  */
 
+ .sorted-timeline {
+   display: none;
+ }
+
  .sortedNameDeclarations {
   display: none;
   border-top: 1px solid black;
@@ -136,6 +136,7 @@ a.tweet-handle {
 
 .sorted-individual-tweet-container p.tweet-time {
   text-decoration: underline;
+  font-style: italic;
 }
 
 .sorted-individual-tweet-container p.sorted-tweet-list-li {
@@ -148,13 +149,17 @@ a.tweet-handle {
 }
 
 .sorted-tweet-list-li {
-  color: lightslategrey;
+  font-style: italic;
+  color: white;
+  padding: 5px 20px;
+  border-radius: 10px;
+  border: 1px solid black;
 }
+
 /*Tweet Timeline and Sorted Timeline Date Styling*/
 .inner-tweet-container .tweet-time, .tweet-time {
   font-size: 12px;
   padding-left: 25px;
-
 }
 
 /*
@@ -162,6 +167,10 @@ a.tweet-handle {
 Hashtag Section
 =====================
 */
+
+.hashtag-tweets-container {
+  display: none;
+}
 
 .hashhtag-deck {
   border: 1px solid black;
@@ -174,7 +183,12 @@ Hashtag Section
 .hashtag-name-declarations {
   display: none;
   color: white;
-  background-color: blue;
+  background-color: lightsalmon;
+}
+
+#hashtag-sorted-title {
+  background-color: salmon;
+  color: white;
 }
 
 
