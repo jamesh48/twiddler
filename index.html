@@ -8,7 +8,14 @@
   <body>
     <script>
 
-      let dateHandler = function (weekDay, month, date, year, time) {
+      let dateHandler = function (tweetDate) {
+
+        let time = tweetDate.toLocaleTimeString();
+        let year = tweetDate.getFullYear();
+        let month = tweetDate.getMonth();
+        let date = tweetDate.getDate();
+        let weekDay = tweetDate.getDay();
+
         let dateString = '';
         if (weekDay === 0) {
           dateString += 'Sun, ';
@@ -64,188 +71,147 @@
 
       }
 
-      //Setting up for Color Coding...
-      let userArray = [];
+    //Setting up for Color Coding...
+    let colorObj = {};
+    //ref: https://www.incengine.com/?name=Pastel-HTML-Color-Codes&art=pastel_colors
+    let colorArray = ['#A5D3CA', '#67C7E2', '#9191FF', '#FFA4A4', '#A095EE', '#75B4FF', '#C87C5B', '#D73E68', '#8D18AB', '#5B5BFF', '#25A0C5', '#4A9586'];
 
-      for (let key in streams.users) {
-        for (let i = streams.users[key].length - 1; i >= 0; i--) {
-          userArray.push(key);
-        }
+    for (let i = colorArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * i);
+      const temp = colorArray[i];
+      colorArray[i] = colorArray[j];
+      colorArray[j] = temp;
+    }
+
+    colorArray = colorArray.slice(0, window.users.length);
+
+    for(let i = 0; i < window.users.length; i++) {
+      colorObj[window.users[i]]= colorArray[i];
+    }
+
+  //Colors!!
+  const colorCoding = function() {
+    for (let key in colorObj) {
+        $('.inner-tweet-container.' + key).css('background-color', colorObj[key]);
+      }
+      $('.outer-tweet-container').css('background-color', 'darkslategray');
+  }
+
+  //Stylize Tweet
+  const stylizeTweet = function(user, message, time, index) {
+    let userNameOnly = user.split('');
+    userNameOnly = userNameOnly.splice(0, userNameOnly.length - 2);
+    userNameOnly = userNameOnly.join('');
+
+    //Stylized User
+    let $user = $('<a></a>').text(user).attr('class', 'tweet-handle').addClass('zero-margin');
+
+    //Stylized Message
+    message = message.split('');
+      if(message.indexOf('#') !== -1) {
+        let hashHandle = message.splice(message.indexOf('#')).join('')
+        let $hashHandle = $('<a></a>').attr('class', 'hash-handle').text(hashHandle);
+        let messageSansHash = message.join('')
+        message = $('<p></p>').attr('class', 'tweet-timeline-message').text(messageSansHash).add($hashHandle);
+      } else {
+        message = message.join('')
+        message = $('<p></p>').text(message).attr('class', 'tweet-timeline-message');
       }
 
-      userArray = userArray.filter((item, index) => userArray.indexOf(item) === index);
-      let colorObj = {};
-      //ref: https://www.incengine.com/?name=Pastel-HTML-Color-Codes&art=pastel_colors
-      let colorArray = ['#A5D3CA', '#67C7E2', '#9191FF', '#FFA4A4', '#A095EE', '#75B4FF', '#C87C5B', '#D73E68', '#8D18AB', '#5B5BFF', '#25A0C5', '#4A9586'];
+    //Stylized Time
+    let $time = $('<p></p>').text(time).attr('class', 'tweet-time').addClass('zero-margin');
 
-      for (let i = colorArray.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * i);
-        const temp = colorArray[i];
-        colorArray[i] = colorArray[j];
-        colorArray[j] = temp;
+    let $unfortunateDiv = $('<div></div>').attr({'class': 'inner-tweet-container ' + userNameOnly, 'id': 'itc' + index});
+    let $stylizedTweet = $($unfortunateDiv.append($user.add(message).add($time)));
+    return $stylizedTweet;
+  }
+
+
+  $(document).ready(function(){
+    let $body = $('body');
+    $body.html('');
+
+    //The Initial Tweet Timeline Setup
+    //Tweet Timeline Container
+    let $tweetTimeline = $('<div></div>').attr({'id': 'tweet-timeline-container','class': 'section-container'}).appendTo('body')
+    //Tweet Timeline Title.
+    $('<h3></h3>').text('Tweet Timeline').attr('class', 'section-title tweet-timeline-title').appendTo($tweetTimeline)
+
+    let index = 0;
+    while (index <= streams.home.length) {
+      if (index === streams.home.length) {
+        //The 11th Tweet Container
+        $('<div></div>').html(stylizeTweet('', '', '', index)).attr({'id': 'otc' + index, 'class': 'outer-tweet-container otc11'}).appendTo($tweetTimeline);
+        break;
       }
 
-      colorArray = colorArray.slice(0, userArray.length);
+    //Tweet Container:
+    const accessTweet = streams.home[index];
+    $('<div></div>').html(stylizeTweet(accessTweet.user +': ', accessTweet.message, dateHandler(accessTweet.created_at), index)).attr({'id': 'otc' + index, 'class': 'outer-tweet-container ' + accessTweet.user}).appendTo($tweetTimeline);
+    index += 1;
+    }
 
-      for(let i = 0; i < userArray.length; i++) {
-        colorObj[userArray[i]]= colorArray[i];
-      }
+  //----One More Tweet Button----
+  const $oneMoreTweetBtn = $('<button></button>').text('More Tweets!').on('click', function() {
+  //Reveals Tweet Container 11...
+  $('.otc11').addClass('js-is-displayed');
 
-      const colorCoding = function() {
-          //Colors!
-          for (let key in colorObj) {
-              $('.inner-tweet-container.' + key).css('background-color', colorObj[key]);
-            }
-
-            $('.outer-tweet-container').css('background-color', 'darkslategray');
-      }
-
-
-      $(document).ready(function(){
-        let $body = $('body');
-        $body.html('');
-
-        let $tweetno11;
-
-        const stylizeTweet = function(user, message, time, index) {
-            let userNameOnly = user.split('');
-            userNameOnly = userNameOnly.splice(0, userNameOnly.length - 2);
-            userNameOnly = userNameOnly.join('');
-
-            //Stylized User
-            let $user = $('<a></a>').text(user).attr('class', 'tweet-handle').addClass('zero-margin');
-
-            //Stylized Message
-            message = message.split('');
-            if(message.indexOf('#') !== -1) {
-              let hashHandle = message.splice(message.indexOf('#')).join('')
-              let $hashHandle = $('<a></a>').attr('class', 'hash-handle').text(hashHandle);
-              let messageSansHash = message.join('')
-              message = $('<p></p>').attr('class', 'tweet-timeline-message').text(messageSansHash).add($hashHandle);
-            } else {
-              message = message.join('')
-              message = $('<p></p>').text(message).attr('class', 'tweet-timeline-message');
-            }
-
-            //Stylized Time
-            let $time = $('<p></p>').text(time).attr('class', 'tweet-time').addClass('zero-margin');
-
-            let $unfortunateDiv = $('<div></div>').attr({'class': 'inner-tweet-container ' + userNameOnly, 'id': 'itc' + index});
-            let $stylizedTweet = $($unfortunateDiv.append($user.add(message).add($time)));
-            return $stylizedTweet;
-        }
-
-
-      //The basic Tweet Timeline
-        let $tweetTimeline = $('<div></div>').addClass('test-border-one').attr('class', 'section-container');
-        let $tweetTimelineTitle = $('<h3></h3>').text('Tweet Timeline').attr('class', 'section-title tweet-timeline-title');
-
-        $tweetTimeline.append($tweetTimelineTitle);
-        $tweetTimeline.appendTo($body);
-
-        let index = 0;
-        while(index <= streams.home.length){
-          if (index === streams.home.length) {
-            let $tweet = $('<div></div>').html(stylizeTweet('', '', '', index)).attr({'id': 'otc' + index, 'class': 'outer-tweet-container js-is-hidden'});
-            $tweet.appendTo($tweetTimeline);
-            break;
-          }
-          let tweet = streams.home[index];
-
-          //Handling the Time
-          let d = tweet.created_at;
-          let time = d.toLocaleTimeString();
-          let year = d.getFullYear();
-          let month = d.getMonth();
-          let date = d.getDate();
-          let weekDay = d.getDay();
-          let fullDate = dateHandler(weekDay, month, date, year, time);
-
-          //Tweet Container:
-          let $tweet = $('<div></div>').html(stylizeTweet(tweet.user +': ', tweet.message, fullDate, index)).attr({'id': 'otc' + index, 'class': 'outer-tweet-container ' + tweet.user});
-
-          $tweet.appendTo($tweetTimeline);
-          index += 1;
-        }
-
-//One More Tweet Button---
-//-------------------
-  let $oneMoreTweetBtn = $('<button></button>').text('More Tweets!').on('click', function() {
-  $('#otc11').removeClass('js-is-hidden');
+  //Generates a new Tweet.
   generateRandomTweet();
-    //Add new html
 
-//This part introduces a new tweet and moves all the tweets down in the stack-
-  let saverArray =[];
-  let colorSaverArray = [];
+  //This part introduces a new tweet and moves all the tweets down in the stack-
+  const saverArray =[];
+  const colorSaverArray = [];
   for (let i = 0; i <= 11; i++) {
-    let tweet = streams.home[streams.home.length - 1];
-
     let saveUser = $('#itc' + i).children('a.tweet-handle').text();
-
     let saveMessage = $('#itc' + i).children('p.tweet-timeline-message').text();
-
     let saveHash = $('#itc' + i).children('a.hash-handle').text();
     saveMessage = saveMessage + saveHash;
-
     let saveTime = $('#itc' + i).children('p.tweet-time').text();
 
     saverArray.push(stylizeTweet(saveUser, saveMessage, saveTime));
 
-    let currentColor =$('#itc' + i).css('background-color');
+    const currentColor =$('#itc' + i).css('background-color');
     colorSaverArray.push(currentColor);
 
     //The New Tweet
     if (i === 0) {
+      const newTweet = streams.home[streams.home.length - 1];
+
+      //The User Handle for the new Tweet (no @ sign, but includes colon).
+      let $userHandle = $('<a></a>').text(newTweet.user + ': ').attr('class', 'tweet-handle');
       //Handling the Time for new Tweet~
-      let d = tweet.created_at;
-      let time = d.toLocaleTimeString();
-      let year = d.getFullYear();
-      let month = d.getMonth();
-      let date = d.getDate();
-      let weekDay = d.getDay();
-      let fullDate = dateHandler(weekDay, month, date, year, time);
-
-      let $userHandle = $('<a></a>').text(tweet.user + ': ').attr('class', 'tweet-handle zero-margin');
-
+      //The Tweet Time:
+      let $time = $('<p></p>').text(dateHandler(newTweet.created_at)).attr('class', 'tweet-time zero-margin');
 
       //New Tweet Message-
-      let newTweetMessage = tweet.message.split('');
-        if(newTweetMessage.indexOf('#') !== -1) {
+      let newTweetMessage = newTweet.message.split('');
+        if (newTweetMessage.indexOf('#') !== -1) {
           let hashHandle = newTweetMessage.splice(newTweetMessage.indexOf('#')).join('')
           let $hashHandle = $('<a></a>').attr('class', 'hash-handle').text(hashHandle);
-          let messageSansHash = newTweetMessage.join('');
-          newTweetMessage = $('<p></p>').attr('class', 'tweet-timeline-message').text(messageSansHash).add($hashHandle);
+          newTweetMessage = $('<p></p>').attr('class', 'tweet-timeline-message').text(newTweetMessage.join('')).add($hashHandle);
         } else {
-          newTweetMessage = newTweetMessage.join('')
-          newTweetMessage = $('<p></p>').text(newTweetMessage).attr('class', 'tweet-timeline-message');
+          newTweetMessage = $('<p></p>').text(newTweetMessage.join('')).attr('class', 'tweet-timeline-message');
         }
-
-      let $time = $('<p></p>').text(fullDate).attr('class', 'tweet-time zero-margin');
-
-      let newTweet = $userHandle.add(newTweetMessage).add($time);
+      //Declaring the New Tweet.
+      const finalNewTweet = $userHandle.add(newTweetMessage).add($time);
+      //These lines remove the colon from the user handle so that the background color in colorObj can be accessed.
       let removeColon = $userHandle.text().split('');
       removeColon = removeColon.splice(0, removeColon.length - 2);
       $userHandle = removeColon.join('');
-       $('#itc' + i).html(newTweet).css('background-color', colorObj[$userHandle]);
+      //Finally the new Tweet is introduced
+       $('#itc0').html(finalNewTweet).css('background-color', colorObj[$userHandle]);
     } else {
-      //The rest of the Tweets------
-      //prevHandle changes the class (for color purposes)
-      let $userHandle = saverArray[i - 1].children('a.tweet-handle').html();
-      let prevHandle = $userHandle.split('');
-      prevHandle = prevHandle.splice(0, prevHandle.length - 2).join('');
-      //---------
+      //The rest of the tweets (itc2 - itc11)
+      //The Previous User Handle
+      let coolHandle = saverArray[i - 1].children('a.tweet-handle').text();
+      let coolMessage = saverArray[i - 1].children('p.tweet-timeline-message').text();
+      let coolHash = saverArray[i - 1].children('a.hash-handle').text();
+      coolMessage = coolMessage + coolHash;
 
-      $userHandle = $('<a></a>').text($userHandle).attr('class', 'tweet-handle zero-margin');
+      let coolTime = saverArray[i - 1].children('p.tweet-time').text();
 
-      let $oldMessage = $('<p></p>').text(saverArray[i - 1].children('p.tweet-timeline-message').text()).attr('class', 'tweet-timeline-message zero-margin');
-
-      let $oldHash = $(saverArray[i - 1]).children('a.hash-handle').attr('class', 'hash-handle');
-
-      let $time = $('<p></p>').text(saverArray[i - 1].children('p.tweet-time').text()).attr('class', 'tweet-time zero-margin');
-     let oldTweet = $userHandle.add($oldMessage).add($oldHash).add($time);
-
-     $('#itc' + i).html(oldTweet).css({'background-color': colorSaverArray[i - 1]});
+      $('#itc' + i).html(stylizeTweet(coolHandle, coolMessage, coolTime).html()).css({'background-color': colorSaverArray[i - 1]});
      }
    }
 
@@ -254,32 +220,31 @@
     //Clears the Sorted Tweet Stack;
     $('.current-tweet-stack').html('');
     //Then repopulates Sorted Tweet Stack with New Tweets.
-    for (let key in streams.users) {
-      for (let i = streams.users[key].length - 1; i >= 0; i--) {
+      for (let i = streams.home.length - 1; i >= 0; i--) {
         let tweet = streams.home[i];
-          //Handling the Time for Sorted Timeline Ind tweet
-          let d = tweet.created_at;
-          let time = d.toLocaleTimeString();
-          let year = d.getFullYear();
-          let month = d.getMonth();
-          let date = d.getDate();
-          let weekDay = d.getDay();
-          let fullDate = dateHandler(weekDay, month, date, year, time);
 
+        //Handling the Time for Sorted Timeline Ind tweet
+        let fullDate = dateHandler(tweet.created_at);
 
-        let currentTweet = JSON.stringify(streams.users[key][i].message);
-
+        let currentTweet = tweet.message;
         //For hashtag-stack
         let hashCheck = currentTweet.split('');
         if (hashCheck.indexOf('#') !== -1) {
           hashCheck = hashCheck.splice(hashCheck.indexOf('#') + 1);
-          hashCheck.pop();
           hashCheck = hashCheck.join('');
           let $containerDiv = $('<div></div>').attr('class', 'sorted-individual-tag-container');
 
-          let $currentUserTweet = $('<p></p>').attr('class', 'sorted-tag-list-li').text(currentTweet);
-          $currentUserTweet.appendTo($containerDiv);
+          let $currentDate = $('<p></p>').attr('class', 'tweet-time').text(fullDate + ', ').addClass('js-is-underlined').appendTo($containerDiv);
+
+          let $currentUserTweet = $('<p></p>').attr('class', 'sorted-tag-list-li').text(tweet.user + ': ' + tweet.message).css('background-color', colorObj[tweet.user]).appendTo($containerDiv)
+
           $containerDiv.appendTo('#' + hashCheck + '-hashtag-stack');
+
+          let $hashTagStackChildren = $('#' + hashCheck + '-hashtag-stack').children();
+
+          if ($hashTagStackChildren.length > 5) {
+            $hashTagStackChildren.eq($hashTagStackChildren.length - 1).remove();
+          }
         }
 
         //For Sorted Tweet Stack;
@@ -287,30 +252,27 @@
 
         let $currentDate = $('<p></p>').attr('class', 'tweet-time').text(fullDate + ', ');
 
-        let $currentUserTweet = $('<p></p>').attr('class', 'sorted-tweet-list-li').css('background-color', colorObj[streams.users[key][i].user]).text(key + ': ' + currentTweet);
+        let $currentUserTweet = $('<p></p>').attr('class', 'sorted-tweet-list-li').css('background-color', colorObj[tweet.user]).text(tweet.user + ': ' + currentTweet);
 
         $currentDate.appendTo($containerDiv);
         $currentUserTweet.appendTo($containerDiv);
-        $containerDiv.appendTo('#' + key + '-tweet-stack');
+        $containerDiv.appendTo('#' + tweet.user + '-tweet-stack');
 
         //These lines limit the Sorted Timeline to the 5 most recent tweets.
-        let $userTweetStackChildren = $('#' + key + '-tweet-stack').children();
-        if ($userTweetStackChildren.length > 4) {
-          break;
+        let $userTweetStackChildren = $('#' + tweet.user + '-tweet-stack').children();
+        if ($userTweetStackChildren.length > 5) {
+          $userTweetStackChildren.eq($userTweetStackChildren.length - 1).remove();
         }
       }
-    }
 
       //Makes links clickable-
       $('a').on('click', function() {
-
         //First Tests if the event.target.innerHTML is a handle or hashtag...
         let aTest = event.target.innerHTML.split('');
         //For Hashtags...
         if (aTest[0] === '#') {
           aTest = aTest.splice(1)
           aTest = aTest.join('');
-
           $('.hashtag-name-declarations').removeClass('js-is-displayed');
           $('.' + aTest).addClass('js-is-displayed');
           $('#hashtag-sorted-title').text('-- #' + aTest + ' --');
@@ -336,13 +298,10 @@
         $('#sorted-timeline').css({'background-color': alphaColor});
 
       })
-}).attr('class', 'one-more-tweet-button').appendTo($body);
+}).attr('class', 'one-more-tweet-button').appendTo($tweetTimeline);
 
 
-colorCoding();
-
-//Line Break
-$('</br>').appendTo('body')
+      colorCoding();
 
       //Sorted Section-----------
       const $sortedTweetsContainer = $('<div></div>').attr({'id': 'sorted-timeline', 'class': 'section-container sorted-timeline'});
@@ -350,14 +309,12 @@ $('</br>').appendTo('body')
       let $title = $('<h3></h3>').text('Sorted').addClass('js-is-underlined').attr({'class': 'section-title', 'id': 'sorted-title'}).appendTo($sortedTweetsContainer);
 
       for(let key in streams.users){
-        let $currentSortedTweetDeck = $('<div></div>').addClass('test-border-one').attr({'class': 'sortedNameDeclarations ' + key});
+        let $currentSortedTweetDeck = $('<div></div>').attr({'class': 'sortedNameDeclarations ' + key});
 
         $($currentSortedTweetDeck).appendTo($sortedTweetsContainer);
 
         //Tweeters Name
         //these lines add the names:
-
-
         let $currentTweetStack = $('<div></div>').attr({'id': key + '-tweet-stack', 'class': 'current-tweet-stack'});
         $currentTweetStack.appendTo($currentSortedTweetDeck);
 
@@ -366,41 +323,27 @@ $('</br>').appendTo('body')
 
         //These lines add the tweets:
         for (let i = 0; i < streams.users[key].length; i++) {
-          let tweet = streams.home[i];
-
+          let tweet = streams.users[key][i];
           //Handling the Time
-          let d = tweet.created_at;
-          let time = d.toLocaleTimeString();
-          let year = d.getFullYear();
-          let month = d.getMonth();
-          let date = d.getDate();
-          let weekDay = d.getDay();
-          let fullDate = dateHandler(weekDay, month, date, year, time);
+          let fullDate = dateHandler(tweet.created_at);
 
-          let currentTweet = streams.users[key][i].message;
+          let currentTweet = tweet.message;
           let containerDiv = $('<div></div>').attr('class', 'sorted-individual-tweet-container')
-          let $currentUserTime = $('<p></p>').attr('class', 'tweet-time').text(fullDate + ', ')
-          let $currentUserTweet = $('<p></p>').attr('class', 'sorted-tweet-list-li').css('background-color', colorObj[streams.users[key][i].user]).text(currentTweet).addClass('js-is-italicized');
+          let $currentUserTime = $('<p></p>').attr('class', 'tweet-time').text(fullDate + ', ').appendTo(containerDiv);
+          let $currentUserTweet = $('<p></p>').attr('class', 'sorted-tweet-list-li').css('background-color', colorObj[tweet.user]).text(currentTweet).addClass('js-is-italicized').appendTo(containerDiv);
 
           if (i === 0) {
             $($currentUserTweet).addClass('js-is-bolded')
           }
-          $currentUserTime.appendTo(containerDiv);
-          $currentUserTweet.appendTo(containerDiv);
-
           containerDiv.appendTo($currentTweetStack);
         }
         //-------------------------
-
-        $('</br>').appendTo($currentTweetStack);
-
       }
 
       $sortedTweetsContainer.appendTo($body)
 
       //Makes links clickable-
       $('a').on('click', function() {
-
         //First Tests if the event.target.innerHTML is a handle or hashtag...
         let aTest = event.target.innerHTML.split('');
         //For Hashtags...
@@ -456,24 +399,20 @@ $('</br>').appendTo('body')
           if (checkTag.indexOf('#') !== -1) {
             checkTag = checkTag.splice(checkTag.indexOf('#')).join('')
 
-            if ('#' + hashCheck === checkTag) {
-              let $containerDiv = $('<div></div>').attr('class', 'sorted-individual-tag-container');
-                let tweet = $('<p></p>').attr('class', 'sorted-tag-list-li').text(streams.home[j].user + ': ' + streams.home[j].message).appendTo($containerDiv);
-              $containerDiv.appendTo($currentHashTagStack);
-            }
+          if ('#' + hashCheck === checkTag) {
+            //Container that holds time & tweet.
+            let $containerDiv = $('<div></div>').attr('class', 'sorted-individual-tag-container');
+            //Time
+            $('<p></p>').text(dateHandler(streams.home[j].created_at)).attr('class', 'tweet-time').appendTo($containerDiv);
+            //Tweet
+            $('<p></p>').attr('class', 'sorted-tag-list-li').text(streams.home[j].user + ': ' + streams.home[j].message).appendTo($containerDiv);
+            $containerDiv.appendTo($currentHashTagStack);
           }
         }
       }
     }
-
-      let coolButton = $('<button></button>').text('Test').on('click',
-        function (){
-          let test = $('.twit8').css('background-color');
-          alert(JSON.stringify(test));
-
-        }
-      ).appendTo('body');
-    });
+  }
+});
     </script>
   </body>
 </html>

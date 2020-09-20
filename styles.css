@@ -5,6 +5,10 @@ h2, h3, h4 {
   margin: 0;
 }
 
+body {
+  background-color: lightslategray;
+}
+
 a {
   text-decoration: underline;
   color: blue;
@@ -17,7 +21,7 @@ Testing Tools
 */
 .test-border-one {
   border: 1px solid black;
-  border-radius: 2%;
+  border-radius: 10px;
 }
 
 .test-border-two {
@@ -37,6 +41,9 @@ Font
 .section-title {
   text-align: center;
   padding: 7.5px 0 10px 0;
+  border: 4px solid darkslategray;
+  border-radius: 10px 10px 0 0;
+  border-bottom: none;
 }
 
 .margin {
@@ -60,15 +67,13 @@ Tweet Timeline Section
 }
 
 .outer-tweet-container {
-  border-bottom: none;
-  border-left: none;
-  border-right: none;
-  padding: 3.5px;
+  border: 4px solid darkslategray;
+  border-top: none;
 }
 
 .inner-tweet-container p {
   color: #FFFFFF;
-  padding: 3px;
+  padding: 5px;
 }
 
 a.tweet-handle {
@@ -80,20 +85,22 @@ a.tweet-handle {
    margin: 0;
  }
 
- .section-container {
-   border: 1px solid darkslategrey;
-   border-radius: 2%;
- }
-
  .tweet-timeline-message {
   display: inline-block;
   margin: 0;
 }
 
-/*-The 11th Tweet-*/
-#otc11 {
-  background-color: lightslategrey !important;
+#otc0 {
+  border-top: 4px solid darkslategray;
 }
+/*-The 11th Tweet-*/
+.otc11 {
+  display: none;
+  background-color: lightslategrey !important;
+  border: 4px solid darkslategray;
+  border-top: none;
+}
+
 #itc11 {
   background-color: rgba(0, 0, 0, 0.2) !important;
   text-align: center;
@@ -111,6 +118,10 @@ a.tweet-handle {
 }
 
 
+.section-container.sorted-timeline, .section-container.hashtag-tweets-container {
+  margin-top: 20px;
+}
+
 /*
 =====================
  Sorted Section
@@ -123,15 +134,12 @@ a.tweet-handle {
 
  .sortedNameDeclarations {
   display: none;
-  border-top: 1px solid black;
+  border: 4px solid darkslategray;
+  border-radius: 0 0 10px 10px;
 }
 
 .sorted-individual-tweet-container p {
   display: inline-block;
-}
-
-.current-tweet-stack {
-  margin-bottom: 20px;
 }
 
 .sorted-individual-tweet-container p.tweet-time {
@@ -143,15 +151,18 @@ a.tweet-handle {
   margin-left: 5px;
 }
 
-.sorted-timeline {
-  margin-top: 20px;
-  border: 1px solid black;
+.sorted-individual-tag-container p.sorted-tag-list-li {
+  margin-left: 5px;
 }
 
-.sorted-tweet-list-li {
+.sorted-timeline {
+  border-radius: 10px;
+}
+
+.sorted-tweet-list-li, .sorted-tag-list-li {
   font-style: italic;
   color: white;
-  padding: 5px 20px;
+  padding: 5px 15px;
   border-radius: 10px;
   border: 1px solid black;
 }
@@ -170,25 +181,30 @@ Hashtag Section
 
 .hashtag-tweets-container {
   display: none;
+  border-radius: 10px;
 }
 
-.hashhtag-deck {
-  border: 1px solid black;
+.sorted-individual-tag-container p {
+  display: inline-block;
 }
 
-.current-hashtag-stack {
-  border: 1px solid black;
+p.sorted-tag-list-li {
+  background-color: salmon;
 }
 
 .hashtag-name-declarations {
   display: none;
   color: white;
   background-color: lightsalmon;
+  border-radius: 0 0 10px 10px;
+  border: 4px solid darkslategray;
 }
 
 #hashtag-sorted-title {
   background-color: salmon;
   color: white;
+  border: 4px solid darkslategray;
+  border-bottom: none;
 }
 
 
@@ -241,4 +257,8 @@ Buttons
   background-color: royalblue;
   color: white;
   text-decoration: underline;
+  border-radius: 0 0 10px 10px;
+  border: 4px solid darkslategray;
+  border-top: none;
+  outline: none;
 }
