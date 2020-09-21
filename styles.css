@@ -7,6 +7,7 @@ h2, h3, h4 {
 
 body {
   background-color: lightslategray;
+  font: 300 16px/22px "Lato", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 a {
@@ -74,6 +75,17 @@ Tweet Timeline Section
 .inner-tweet-container p {
   color: #FFFFFF;
   padding: 5px;
+  font-size: 18px;
+}
+
+.inner-tweet-container a {
+  font-size: 18px;
+  padding: 5px 0;
+}
+
+.inner-tweet-container a:hover {
+  color: white;
+  font-size: 26px;
 }
 
 a.tweet-handle {
@@ -139,16 +151,31 @@ a.tweet-handle {
   border-radius: 0 0 10px 10px;
 }
 
+.sorted-individual-tweet-container, .sorted-individual-tag-container {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 74px;
+}
+
+.empty-sorted-tweet, .empty-sorted-tag {
+  height: 74px;
+}
+
+.sorted-individual-tweet-container:hover, .sorted-individual-tag-container:hover {
+  overflow: visible;
+}
+
 .sorted-individual-tweet-container p {
   display: inline-block;
 }
 
-.sorted-individual-tweet-container p.sorted-tweet-list-li {
+/* .sorted-individual-tweet-container p.sorted-tweet-list-li {
   margin-left: 5px;
-}
+} */
 
 .sorted-individual-tag-container p.sorted-tag-list-li {
-  margin-left: 5px;
+  /* margin-left: 5px; */
 }
 
 .sorted-timeline {
@@ -156,17 +183,18 @@ a.tweet-handle {
 }
 
 .sorted-tweet-list-li, .sorted-tag-list-li {
+  font-size: 18px;
   font-style: italic;
   color: white;
-  padding: 5px 15px;
-  border-radius: 10px;
+  padding: 5px 10px;
+  /* border-radius: 10px; */
 }
 
 /*Tweet Timeline and Sorted Timeline Date Styling*/
 .inner-tweet-container .tweet-time, .tweet-time {
-  font-size: 14px;
+  font-size: 18px;
   margin-left: 25px;
-  padding: 2px 10px;
+  padding: 5px 10px;
   color: white;
   border-left: none;
   border-right: none;
@@ -246,13 +274,19 @@ Buttons
 */
 
 .one-more-tweet-button {
+  font-size: 18px;
   width: 100%;
-  height: 50px;
-  background-color: royalblue;
+  height: 60px;
+  background-color: #2F4F4FA6;
   color: white;
-  text-decoration: underline;
   border-radius: 0 0 10px 10px;
-  border: 4px solid darkslategray;
+  border: 4px solid darkslategrey;
   border-top: none;
   outline: none;
+}
+
+.one-more-tweet-button:hover {
+  background-color: #4169E1;
+  border: 4px solid white;
+  font-size: 30px;
 }
