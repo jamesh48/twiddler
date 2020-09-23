@@ -6,319 +6,66 @@
     <script src="jquery.js"></script>
     <script src="dataGenerator.js"></script>
   </head>
+
   <body>
     <script>
+      //Global Variables - - ->
+      //Visitor
+      let visitor = 'Julian';
+      //Setting up for Color Coding - - ->
+      let colorObj = {};
+      //ref: https://www.incengine.com/?name=Pastel-HTML-Color-Codes&art=pastel_colors
+      let colorArray = ['#A5D3CA', '#67C7E2', '#9191FF', '#FFA4A4', '#A095EE', '#75B4FF', '#C87C5B', '#D73E68', '#8D18AB', '#5B5BFF', '#25A0C5', '#4A9586'];
 
-      let dateHandler = function (tweetDate) {
-
-        let time = tweetDate.toLocaleTimeString();
-        let year = tweetDate.getFullYear();
-        let month = tweetDate.getMonth();
-        let date = tweetDate.getDate();
-        let weekDay = tweetDate.getDay();
-
-        let dateString = '';
-        if (weekDay === 0) {
-          dateString += 'Sun, ';
-        } else if (weekDay === 1) {
-          dateString += 'Mon, ';
-        } else if (weekDay === 2) {
-          dateString += 'Tues, ';
-        } else if (weekDay === 3) {
-          dateString += 'Wed, ';
-        } else if (weekDay === 4) {
-          dateString +=  'Thurs, ';
-        } else if (weekDay === 5) {
-          dateString += 'Fri, ';
-        } else if (weekDay === 6) {
-          dateString += 'Sat, ';
-        } else if (weekDay === 7) {
-          dateString += 'Sun, '
-        } else {
-          alert('weekday value not valid');
-        }
-
-        if (month === 0) {
-          dateString += 'Jan ';
-        } else if (month === 1) {
-          dateString += 'Feb ';
-        } else if (month === 2) {
-          dateString += 'Mar ';
-        } else if (month === 3) {
-          dateString += 'April ';
-        } else if (month === 4) {
-          dateString += 'May ';
-        } else if (month === 5) {
-          dateString += 'June ';
-        } else if (month === 6) {
-          dateString += 'July ';
-        } else if (month === 7) {
-          dateString += 'August ';
-        } else if (month === 8) {
-          dateString += 'Sept ';
-        } else if (month === 9) {
-          dateString += 'Oct ';
-        } else if (month === 10) {
-          dateString += 'Nov ';
-        } else if (month === 11) {
-          dateString += 'Dec ';
-        } else {
-          alert('month value is not valid');
-        }
-
-        dateString += (date + ', ' + year + ' || ' + time);
-
-        return dateString;
-
+      for (let i = colorArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * i);
+        const temp = colorArray[i];
+        colorArray[i] = colorArray[j];
+        colorArray[j] = temp;
       }
 
-    //Setting up for Color Coding...
-    let colorObj = {};
-    //ref: https://www.incengine.com/?name=Pastel-HTML-Color-Codes&art=pastel_colors
-    let colorArray = ['#A5D3CA', '#67C7E2', '#9191FF', '#FFA4A4', '#A095EE', '#75B4FF', '#C87C5B', '#D73E68', '#8D18AB', '#5B5BFF', '#25A0C5', '#4A9586'];
+      colorArray = colorArray.slice(0, window.users.length);
 
-    for (let i = colorArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * i);
-      const temp = colorArray[i];
-      colorArray[i] = colorArray[j];
-      colorArray[j] = temp;
-    }
-
-    colorArray = colorArray.slice(0, window.users.length);
-
-    for(let i = 0; i < window.users.length; i++) {
-      colorObj[window.users[i]]= colorArray[i];
-    }
-
-  //Colors!!
-  const colorCoding = function() {
-    for (let key in colorObj) {
-        $('.inner-tweet-container.' + key).css('background-color', colorObj[key]);
-      }
-      $('.outer-tweet-container').css('background-color', 'darkslategray');
-  }
-
-  //Stylize Tweet
-  const stylizeTweet = function(user, message, time, index) {
-    let userNameOnly = user.split('');
-    userNameOnly = userNameOnly.splice(0, userNameOnly.length - 2);
-    userNameOnly = userNameOnly.join('');
-
-    //Stylized User
-    let $user = $('<a></a>').text(user).attr('class', 'tweet-handle').addClass('zero-margin');
-
-    //Stylized Message
-    message = message.split('');
-      if(message.indexOf('#') !== -1) {
-        let hashHandle = message.splice(message.indexOf('#')).join('')
-        let $hashHandle = $('<a></a>').attr('class', 'hash-handle').text(hashHandle);
-        let messageSansHash = message.join('')
-        message = $('<p></p>').attr('class', 'tweet-timeline-message').text(messageSansHash).add($hashHandle);
-      } else {
-        message = message.join('')
-        message = $('<p></p>').text(message).attr('class', 'tweet-timeline-message');
+      for(let i = 0; i < window.users.length; i++) {
+        colorObj[window.users[i]]= colorArray[i];
       }
 
-    //Stylized Time
-    let $time = $('<p></p>').text(time).attr('class', 'tweet-time').addClass('zero-margin');
+      colorObj[visitor] = '#800000';
 
-    let $unfortunateDiv = $('<div></div>').attr({'class': 'inner-tweet-container ' + userNameOnly, 'id': 'itc' + index});
-    let $stylizedTweet = $($unfortunateDiv.append($user.add(message).add($time)));
-    return $stylizedTweet;
-  }
-
-
-  $(document).ready(function(){
-    let $body = $('body');
-    $body.html('');
-
-    //The Initial Tweet Timeline Setup
-    //Tweet Timeline Container
-    let $tweetTimeline = $('<div></div>').attr({'id': 'tweet-timeline-container','class': 'section-container'}).appendTo('body')
-    //Tweet Timeline Title.
-    $('<h3></h3>').text('Tweet Timeline').attr('class', 'section-title tweet-timeline-title').appendTo($tweetTimeline)
-
-    let index = 0;
-    while (index <= streams.home.length) {
-      if (index === streams.home.length) {
-        //The 11th Tweet Container
-        $('<div></div>').html(stylizeTweet('', '', '', index)).attr({'id': 'otc' + index, 'class': 'outer-tweet-container otc11'}).appendTo($tweetTimeline);
-        break;
-      }
-
-    //Tweet Container:
-    const accessTweet = streams.home[index];
-    $('<div></div>').html(stylizeTweet(accessTweet.user +': ', accessTweet.message, dateHandler(accessTweet.created_at), index)).attr({'id': 'otc' + index, 'class': 'outer-tweet-container ' + accessTweet.user + '-tweet-timeline'}).appendTo($tweetTimeline);
-    index += 1;
-    }
-
-  //----One More Tweet Button----
-  const $oneMoreTweetBtn = $('<button></button>').text('More Tweets!').on('click', function() {
-  //Reveals Tweet Container 11...
-  $('.otc11').addClass('js-is-displayed');
-
-  //Generates a new Tweet.
-  generateRandomTweet();
-
-  //This part introduces a new tweet and moves all the tweets down in the stack-
-  const saverArray =[];
-  const colorSaverArray = [];
-  for (let i = 0; i <= 11; i++) {
-    let saveUser = $('#itc' + i).children('a.tweet-handle').text();
-    let saveMessage = $('#itc' + i).children('p.tweet-timeline-message').text();
-    let saveHash = $('#itc' + i).children('a.hash-handle').text();
-    saveMessage = saveMessage + saveHash;
-    let saveTime = $('#itc' + i).children('p.tweet-time').text();
-
-    saverArray.push(stylizeTweet(saveUser, saveMessage, saveTime));
-
-    const currentColor =$('#itc' + i).css('background-color');
-    colorSaverArray.push(currentColor);
-
-    //The New Tweet
-    if (i === 0) {
-      const newTweet = streams.home[streams.home.length - 1];
-
-      //The User Handle for the new Tweet (no @ sign, but includes colon).
-      let $userHandle = $('<a></a>').text(newTweet.user + ': ').attr('class', 'tweet-handle');
-      //Handling the Time for new Tweet~
-      //The Tweet Time:
-      let $time = $('<p></p>').text(dateHandler(newTweet.created_at)).attr('class', 'tweet-time zero-margin');
-
-      //New Tweet Message-
-      let newTweetMessage = newTweet.message.split('');
-        if (newTweetMessage.indexOf('#') !== -1) {
-          let hashHandle = newTweetMessage.splice(newTweetMessage.indexOf('#')).join('')
-          let $hashHandle = $('<a></a>').attr('class', 'hash-handle').text(hashHandle);
-          newTweetMessage = $('<p></p>').attr('class', 'tweet-timeline-message').text(newTweetMessage.join('')).add($hashHandle);
-        } else {
-          newTweetMessage = $('<p></p>').text(newTweetMessage.join('')).attr('class', 'tweet-timeline-message');
-        }
-      //Declaring the New Tweet.
-      const finalNewTweet = $userHandle.add(newTweetMessage).add($time);
-      //These lines remove the colon from the user handle so that the background color in colorObj can be accessed.
-      let removeColon = $userHandle.text().split('');
-      removeColon = removeColon.splice(0, removeColon.length - 2);
-      $userHandle = removeColon.join('');
-      //Finally the new Tweet is introduced
-       $('#itc0').html(finalNewTweet).css('background-color', colorObj[$userHandle]);
-    } else {
-      //The rest of the tweets (itc2 - itc11)
-      //The Previous User Handle
-      let coolHandle = saverArray[i - 1].children('a.tweet-handle').text();
-      let coolMessage = saverArray[i - 1].children('p.tweet-timeline-message').text();
-      let coolHash = saverArray[i - 1].children('a.hash-handle').text();
-      coolMessage = coolMessage + coolHash;
-
-      let coolTime = saverArray[i - 1].children('p.tweet-time').text();
-
-      $('#itc' + i).html(stylizeTweet(coolHandle, coolMessage, coolTime).html()).css({'background-color': colorSaverArray[i - 1]});
-     }
-   }
-
-   //Clears the HashTag Tweet Stack
-   $('.current-hashtag-stack').html('');
-    //Clears the Sorted Tweet Stack;
-    $('.current-tweet-stack').html('');
-    //Then repopulates Sorted Tweet Stack & Hashtag Stack with New Tweets.
-      for (let i = streams.home.length - 1; i >= 0; i--) {
-        let tweet = streams.home[i];
-
-        //Handling the Time for Sorted Timeline Ind tweet
-        let fullDate = dateHandler(tweet.created_at);
-        let currentTweet = tweet.message;
-
-        //Alpha Transparency!
-        let alphaColor = colorObj[tweet.user].split('');
-        alphaColor.splice(alphaColor.length, 0, 'A6');
-        alphaColor = alphaColor.join('');
-
-        //For hashtag-stack
-        let hashCheck = currentTweet.split('');
-        if (hashCheck.indexOf('#') !== -1) {
-          hashCheck = hashCheck.splice(hashCheck.indexOf('#') + 1);
-          hashCheck = hashCheck.join('');
-
-          let $containerDiv = $('<div></div>').css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[tweet.user]}).attr('class', 'sorted-individual-tag-container ' + tweet.user);
-
-          let $currentDate = $('<p></p>').attr('class', 'tweet-time').text(fullDate + ', ').css({'background-color': colorObj[tweet.user], 'border': '2px solid white'}).appendTo($containerDiv);
-
-          let $currentUserTweet = $('<p></p>').attr('class', 'sorted-tag-list-li').text(tweet.user + ': ' + tweet.message).css({'background-color': alphaColor, 'border': '2px solid white'
-        }).appendTo($containerDiv)
-
-          //Highlighting Hashtags on Hover after pressing More Tweets.
-          $($containerDiv).hover(function() {
-            $(this).css({'background-color': colorObj[tweet.user], 'border': '1px solid white'})
-        }, function () {
-            $(this).css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[tweet.user]})
-        });
-
-          $containerDiv.appendTo('#' + hashCheck + '-hashtag-stack');
-
-          let $hashTagStackChildren = $('#' + hashCheck + '-hashtag-stack').children();
-
-          if ($hashTagStackChildren.length > 5) {
-            $hashTagStackChildren.eq($hashTagStackChildren.length - 1).remove();
+      //Functions
+      //Hash Check - - ->
+      const checkHash = function (message) {
+        message = message.split('')
+        if (message.indexOf('#') !== -1) {
+          message = message.splice(message.indexOf('#'));
+          message = message.join('');
+          for ( let i = 0; i < tags.length; i++){
+            if (tags[i] === message){
+              return;
+            }
           }
-      }
-
-        //For Sorted Tweet Stack after pressing button;
-        let $containerDiv = $('<div></div>').attr('class', 'sorted-individual-tweet-container').css({'border': '2px solid ' + colorObj[tweet.user]});
-
-        let $currentDate = $('<p></p>').attr('class', 'tweet-time').text(fullDate).css({'background-color': colorObj[tweet.user], 'border': '2px solid white'}).appendTo($containerDiv);
-
-        let $currentUserTweet = $('<p></p>').attr('class', 'sorted-tweet-list-li').css({'background-color': alphaColor, 'border': '2px solid white'}).text(tweet.user + ': ' + currentTweet).appendTo($containerDiv);
-
-        //Highlighting Sorted tweets on Hover after pressing More Tweets.
-        $($containerDiv).hover(function() {
-          $(this).css({'background-color': colorObj[tweet.user], 'border': '2px solid white'})
-      }, function () {
-          $(this).css({'background-color': 'initial', 'border': '2px solid ' + colorObj[tweet.user]})
-      });
-
-        $containerDiv.appendTo('#' + tweet.user + '-tweet-stack');
-      $('#' + tweet.user + '-tweet-stack').css('background-color', alphaColor)
-
-        //These lines limit ensure that 5 containers are shown but also limit the Sorted Timeline to the 5 most recent tweets.
-        let $userTweetStackChildren = $('#' + tweet.user + '-tweet-stack').children('.sorted-individual-tweet-container');
-
-        if ($userTweetStackChildren.length > 5) {
-          $userTweetStackChildren.eq($userTweetStackChildren.length - 1).remove();
+          tags.push(message)
         }
-     }
-
-    //These Lines add any remaining empty containers that would be necesary.
-    //First for the Sorted Section
-    for (let key in streams.users) {
-      while ($('#' + key + '-tweet-stack').children().length < 5) {
-        //Empty Containers;
-        let $containerDiv = $('<div></div>').attr('class', 'empty-sorted-tweet').css({'border': '2px solid ' + colorObj[key]});
-
-        let $currentUserTweet = $('<p></p>').appendTo($containerDiv);
-
-        $($containerDiv).appendTo('#' + key + '-tweet-stack');
       }
-   }
 
-   //And for the Hashtag Section.
-   let coolTags = tags.filter(x => (x[0] === '#'));
-   for (let i = 0; i < coolTags.length; i++) {
-
-      while ($(coolTags[i] + '-hashtag-stack').children().length < 5) {
-        //Empty Containers;
-        let $containerDiv = $('<div></div>').attr('class', 'empty-sorted-tag').css({'border': '2px solid salmon', 'background-color': 'lightsalmon'});
-
-        let $currentUserTag = $('<p></p>').appendTo($containerDiv);
-
-        $($containerDiv).appendTo(coolTags[i] + '-hashtag-stack');
+      //Alpha Transparency Color Function - - ->
+      const alphaTransparency = function (user, indicator) {
+        let alphaColor = colorObj[user].split('');
+        alphaColor.splice(alphaColor.length, 0, 'A', '6')
+        alphaColor = alphaColor.join('');
+        return alphaColor;
       }
-   }
 
+      //Adds Color to the Tweet Timeline
+      const tweetTimelineColors = function () {
+        for (let key in colorObj) {
+            $('.inner-tweet-container.' + key).css('background-color', colorObj[key]);
+          }
+          $('.outer-tweet-container').css('background-color', 'darkslategray');
+      }
 
-
-
-      //Makes links clickable-
-      $('a').on('click', function() {
+      //Activate Link Function - - ->
+      const activateLink = function(event) {
         //First Tests if the event.target.innerHTML is a handle or hashtag...
         let aTest = event.target.innerHTML.split('');
         //For Hashtags...
@@ -327,98 +74,7 @@
           aTest = aTest.join('');
           $('.hashtag-name-declarations').removeClass('js-is-displayed');
           $('.' + aTest).addClass('js-is-displayed');
-          $('#hashtag-sorted-title').text('-- #' + aTest + ' --');
-          $('.hashtag-tweets-container').addClass('js-is-displayed');
-        //For User Handles...
-        } else {
-        //For Handles
-          let userHandle = (event.target.innerHTML);
-          userHandle = userHandle.split('');
-          //Removes Colon...
-          userHandle = userHandle.splice(0, userHandle.length - 2).join('');
-
-          $('.sortedNameDeclarations').removeClass('js-is-displayed');
-          $('.' + userHandle + '-tweets-sorted').addClass('js-is-displayed');
-          $('#sorted-title').text('-- ' + userHandle + '\'s Sorted Timeline --').css({'color': '#FFFFFF', 'background-color': colorObj[userHandle]})
-
-          $('.sorted-timeline').addClass('js-is-displayed');
-
-          //Alpha Transparent Background!
-          let alphaColor = colorObj[userHandle].split('');
-          alphaColor.splice(alphaColor.length, 0, 'A6');
-          alphaColor = alphaColor.join('');
-          $('#sorted-timeline').css({'background-color': alphaColor});
-        }
-
-      })
-}).attr('class', 'one-more-tweet-button').appendTo($tweetTimeline);
-
-
-      colorCoding();
-
-      //Sorted Section Inital Set-up-----------
-      const $sortedTweetsContainer = $('<div></div>').attr({'id': 'sorted-timeline', 'class': 'section-container sorted-timeline'});
-
-      let $title = $('<h3></h3>').text('Sorted').addClass('js-is-underlined').attr({'class': 'section-title', 'id': 'sorted-title'}).appendTo($sortedTweetsContainer);
-
-      for(let key in streams.users){
-        let $currentSortedTweetDeck = $('<div></div>').attr({'class': 'sortedNameDeclarations ' + key + '-tweets-sorted'}).appendTo($sortedTweetsContainer)
-
-        //Tweeters Name
-        //these lines add the names:
-        let $currentTweetStack = $('<div></div>').attr({'id': key + '-tweet-stack', 'class': 'current-tweet-stack'}).appendTo($currentSortedTweetDeck);
-        //------------------------
-
-        //These lines add the tweets:
-        for (let i = 0; i < streams.users[key].length + (5 - streams.users[key].length); i++) {
-
-          if (streams.users[key][i] !== undefined) {
-          let tweet = streams.users[key][i];
-
-        //Alpha Transparent Background!
-        let alphaColor = colorObj[tweet.user].split('');
-        alphaColor.splice(alphaColor.length, 0, 'A6');
-        alphaColor = alphaColor.join('');
-
-          //Handling the Time
-          let fullDate = dateHandler(tweet.created_at);
-
-          let currentTweet = tweet.message;
-          let containerDiv = $('<div></div>').attr('class', 'sorted-individual-tweet-container').css('border', '2px solid ' + colorObj[tweet.user]).appendTo($currentTweetStack);
-          let $currentUserTime = $('<p></p>').attr('class', 'tweet-time').css({'background-color': colorObj[tweet.user], 'border': '2px solid white'}).text(fullDate).appendTo(containerDiv);
-          let $currentUserTweet = $('<p></p>').attr('class', 'sorted-tweet-list-li').css({'background-color': alphaColor, 'border': '2px solid white'}).text(currentTweet).appendTo(containerDiv);
-          //Changes Color When Hovering over Sorted Tweets
-          $(containerDiv).hover(function() {
-            $(this).css({'background-color': colorObj[tweet.user], 'border': '2px solid white'})
-          }, function () {
-            $(this).css({'background-color': 'initial', 'border': '2px solid ' + colorObj[tweet.user]});
-          });
-
-          if (i === 0) {
-            $($currentUserTweet).addClass('js-is-bolded')
-          }
-        } else {
-          //Creates Empty Divs...
-          let $containerDiv = $('<div></div>').attr('class', 'empty-sorted-tweet').css('border', '2px solid ' + colorObj[key]).appendTo($currentTweetStack);
-        }
-      }
-        //-------------------------
-      }
-
-      $sortedTweetsContainer.appendTo($body)
-
-      //Makes links clickable-
-      $('a').on('click', function() {
-        //First Tests if the event.target.innerHTML is a handle or hashtag...
-        let aTest = event.target.innerHTML.split('');
-        //For Hashtags...
-        if (aTest[0] === '#') {
-          aTest = aTest.splice(1)
-          aTest = aTest.join('');
-          $('.hashtag-name-declarations').removeClass('js-is-displayed');
-          $('.' + aTest).addClass('js-is-displayed');
-          $('#hashtag-sorted-title').text('-- #' + aTest + ' --');
-          $('.hashtag-tweets-container').addClass('js-is-displayed');
+          $('.hashtag-sorted-title').text('-- #' + aTest + ' --').addClass('js-is-displayed');
           return;
         }
         //For Handles
@@ -427,78 +83,522 @@
         userHandle = userHandle.splice(0, userHandle.length - 2).join('');
 
         //Alpha Transparent Background!
-        let alphaColor = colorObj[userHandle].split('');
-        alphaColor.splice(alphaColor.length, 0, 'A6');
-        alphaColor = alphaColor.join('');
-        //$('#sorted-timeline').css({'background-color': alphaColor});
+        let alphaColor = alphaTransparency(userHandle)
 
-        $('.sortedNameDeclarations').removeClass('js-is-displayed');
+        $('#sorted-timeline').css({'background-color': alphaColor});
+        $('.sorted-name-timeline').removeClass('js-is-displayed');
         $('.' + userHandle + '-tweets-sorted').addClass('js-is-displayed');
-        $('.' + userHandle + '-tweets-sorted').children('div').css('background-color', alphaColor);
-        $('#sorted-title').text('-- ' + userHandle + '\'s Sorted Timeline --').css({'color': '#FFFFFF', 'background-color': colorObj[userHandle]})
+
+        let caps = userHandle.split('');
+        caps[0] = caps[0].toUpperCase();
+        caps = caps.join('');
+        $('#sorted-title').text('-- ' + caps + '\'s Sorted Timeline --').css({'background-color': colorObj[userHandle]})
 
         $('.sorted-timeline').addClass('js-is-displayed');
 
-      });
+      }
 
-      //Hashtag Section-
-      const $hashtagTweetsContainer = $('<div></div>').attr({'id': 'hashtag-timeline', 'class': 'section-container hashtag-tweets-container'}).appendTo('body');
+      //Date Handler Function - - ->
+      const dateHandler = function (tweetDate) {
+      const time = tweetDate.toLocaleTimeString();
+      const year = tweetDate.getFullYear();
+      const month = tweetDate.getMonth();
+      const date = tweetDate.getDate();
+      const weekDay = tweetDate.getDay();
+
+      let dateString = '';
+      //Handling the Day of the Week - - ->
+      if (weekDay === 0) {
+        dateString += 'Sun, ';
+      } else if (weekDay === 1) {
+        dateString += 'Mon, ';
+      } else if (weekDay === 2) {
+        dateString += 'Tues, ';
+      } else if (weekDay === 3) {
+        dateString += 'Wed, ';
+      } else if (weekDay === 4) {
+        dateString +=  'Thurs, ';
+      } else if (weekDay === 5) {
+        dateString += 'Fri, ';
+      } else if (weekDay === 6) {
+        dateString += 'Sat, ';
+      } else if (weekDay === 7) {
+        dateString += 'Sun, '
+      } else {
+        alert('weekday value not valid');
+      }
+      //Handling the Month
+      if (month === 0) {
+        dateString += 'Jan ';
+      } else if (month === 1) {
+        dateString += 'Feb ';
+      } else if (month === 2) {
+        dateString += 'Mar ';
+      } else if (month === 3) {
+        dateString += 'April ';
+      } else if (month === 4) {
+        dateString += 'May ';
+      } else if (month === 5) {
+        dateString += 'June ';
+      } else if (month === 6) {
+        dateString += 'July ';
+      } else if (month === 7) {
+        dateString += 'August ';
+      } else if (month === 8) {
+        dateString += 'Sept ';
+      } else if (month === 9) {
+        dateString += 'Oct ';
+      } else if (month === 10) {
+        dateString += 'Nov ';
+      } else if (month === 11) {
+        dateString += 'Dec ';
+      } else {
+        alert('month value is not valid');
+      }
+      return dateString += (date + ', ' + year + ' || ' + time);
+}
+      //More Tweets Function
+      const moreTweets = function (indicator, $body) {
+          //Reveals Tweet Container 11...
+         $('.otc11').addClass('js-is-displayed');
+        //If the indicator is true, it means that the function is being called from the user submitting their own tweet, thus generateRandomTweet(); is not needed.
+        if (indicator === false || indicator[0] === false) {
+          //Generates a new Tweet.
+          generateRandomTweet();
+        }
+
+        //Saves the values and colors of the Tweet Timeline into arrays.
+        const saverArray =[];
+        const colorSaverArray = [];
+        for (let i = 0; i <= 11; i++) {
+          const saveUser = $('#itc' + i).children('a.tweet-handle').text();
+          let saveMessage = $('#itc' + i).children('p.tweet-timeline-message').text();
+          const saveHash = $('#itc' + i).children('a.hash-handle').text();
+          saveMessage = saveMessage + saveHash;
+          const saveTime = $('#itc' + i).children('p.tweet-time').text();
+          saverArray.push(stylizeTweet(saveUser, saveMessage, saveTime));
+
+          const currentColor = $('#itc' + i).css('background-color');
+          colorSaverArray.push(currentColor);
+          //Introduces New Tweet
+          if (i === 0) {
+            const newTweet = streams.home[streams.home.length - 1];
+            $('#itc0').html(stylizeTweet(newTweet.user + ': ', newTweet.message, dateHandler(newTweet.created_at), i).html());
+            $('#itc0').css('background-color', colorObj[newTweet.user])
+
+          } else {
+            //The rest of the tweets (itc1- itc11)
+            //Accesses the preceeding tweet...
+            const prevHandle = saverArray[i - 1].children('a.tweet-handle').text();
+            let prevMessage = saverArray[i - 1].children('p.tweet-timeline-message').text();
+            const prevHash = saverArray[i - 1].children('a.hash-handle').text();
+            prevMessage = prevMessage + prevHash;
+            const prevTime = saverArray[i - 1].children('p.tweet-time').text();
+            $('#itc' + i).html(stylizeTweet(prevHandle, prevMessage, prevTime).html()).css({'background-color': colorSaverArray[i - 1]}).attr('class', 'inner-tweet-container ' + prevHandle);
+          }
+         }
+         //First if inicator is true (user created tweet is created), the sorted container is remade so that the users tweet stack is introduced.
+         if (indicator === true) {
+           stylizeSortedContainer(arguments[1]);
+           stylizeHashtagContainer(arguments[1]);
+         } else {
+         stylizeSortedContainer(indicator[1]);
+         stylizeHashtagContainer(indicator[1])
+        }
+        //Then the Sorted Container is repopulated with new tweets, including the users.
+        repopulateSortedContainer();
+        repopulateHashTagContainer();
+
+        //Makes links clickable-
+        $('a').on('click', activateLink);
+      }
 
 
-      let $hashTagtitle = $('<h3></h3>').text('Hashtags Sorted').addClass('js-is-underlined').attr({'class': 'section-title', 'id': 'hashtag-sorted-title'}).appendTo($hashtagTweetsContainer);
 
-      //This for loop creates hashtag containers
-    for (let i = 0; i < tags.length; i++) {
+      //Stylize Tweet Function - - ->
+      const stylizeTweet = function(user, message, time, index) {
+        //This Line Removes the Colon and Space (': ')
+        const userNameOnly = user.split('').splice(0, user.length - 2).join('');
+        //Stylized User
+        const $user = $('<a></a>').text(user).attr('class', 'tweet-handle').addClass('zero-margin');
+        //Stylized Message - - ->
+        message = message.split('');
+          //Checks to see if there is a hashtag...
+          if(message.indexOf('#') !== -1) {
+            const hashHandle = message.splice(message.indexOf('#')).join('')
+            const $hashHandle = $('<a></a>').attr('class', 'hash-handle').text(hashHandle);
+            message = $('<p></p>').attr('class', 'tweet-timeline-message').text(message.join('')).add($hashHandle);
+          } else {
+            message = $('<p></p>').text(message.join('')).attr('class', 'tweet-timeline-message');
+          }
 
-      //Removing the hash for the id & class...
-      let hashCheck = tags[i].split('');
-      if (hashCheck[0] === '#') {
-        hashCheck.shift()
-        hashCheck = hashCheck.join('');
-        let $currentSortedHashtagDeck = $('<div></div>').attr('class','hashtag-name-declarations ' + hashCheck).appendTo($hashtagTweetsContainer);
+        //Stylized Time - - ->
+        const $time = $('<p></p>').text(time).attr('class', 'tweet-time').addClass('zero-margin');
+        //The Container that holds the user handle (a), message (p) (with hastag (a)), and time (p)
+        const $innerTweetContainer = $('<div></div>').attr({'class': 'inner-tweet-container ' + userNameOnly, 'id': 'itc' + index});
+        const $stylizedTweet = $($innerTweetContainer.append($user.add(message).add($time)));
+        return $stylizedTweet;
+      }
 
-        let $currentHashTagStack = $('<div></div>').attr({'id': hashCheck + '-hashtag-stack', 'class': 'current-hashtag-stack'}).appendTo($currentSortedHashtagDeck);
+      //Stylize Sorted Timeline Tweet Function - - ->
+      const stylizeSortedContainer = function ($body) {
+        //If Sorted Timeline already exists, delete its contents so it can be remade, otherwise on startup, build the containers and title that hold contents
+        let saveUser;
+        for (let key in streams.users) {
+        if($('.' + key + '-tweets-sorted').hasClass('js-is-displayed')){
+          saveUser = key;
+         }
+        }
+        let $cool = $('.sorted-timeline');
+        if ($cool.children('div').length > 0) {
+            $cool.empty();
+        }
+        let caps = 'sorted';
+        if (saveUser !== undefined) {
+          caps = saveUser.split('');
+          caps[0] = caps[0].toUpperCase();
+          caps = caps.join('');
+      }
+        const $title = $('<h3></h3>').text('-- ' + caps + '\'s Sorted Timeline --').addClass('js-is-underlined').attr({'class': 'section-title', 'id': 'sorted-title'}).css('background-color', colorObj[saveUser]).appendTo('.sorted-timeline');
 
-        for (let j = 0; j < streams.home.length; j++) {
-        if (streams.home[j] !== undefined) {
-          let checkTag = streams.home[j].message;
-          checkTag = checkTag.split('');
-          if (checkTag.indexOf('#') !== -1) {
-            checkTag = checkTag.splice(checkTag.indexOf('#')).join('')
+        for (let key in streams.users) {
+          const $currentSortedTweetDeck = $('<div></div>').attr({'class': 'sorted-name-timeline ' + key + '-tweets-sorted'}).appendTo($('#sorted-timeline'))
 
-          if ('#' + hashCheck === checkTag) {
-          //Alpha Transparency!
-          let alphaColor = colorObj[streams.home[j].user].split('');
-          alphaColor.splice(alphaColor.length, 0, 'A6');
-          alphaColor = alphaColor.join('');
+          if (key === saveUser) {
+            $currentSortedTweetDeck.addClass('js-is-displayed');
+            $('.sorted-title').addClass('js-is-displayed');
+          }
 
-            //Container that holds time & tweet.
-            let $containerDiv = $('<div></div>').attr('class', 'sorted-individual-tag-container ' + streams.home[j].user + '-tag').css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[streams.home[j].user]});
-            //Time
-            $('<p></p>').text(dateHandler(streams.home[j].created_at)).attr('class', 'tweet-time').css({'background-color': colorObj[streams.home[j].user], 'border': '2px solid white'}).appendTo($containerDiv);
+          //Adds the Container Stack for each User Handle - - ->
+          const $currentTweetStack = $('<div></div>').attr({'id': key + '-tweet-stack', 'class': 'current-tweet-stack'}).appendTo($currentSortedTweetDeck);
 
-            //Highlighting on Hover
-            $($containerDiv).hover(function() {
-            $(this).css({'background-color': colorObj[streams.home[j].user], 'border': '2px solid white'})
-          }, function () {
-            $(this).css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[streams.home[j].user]})
-          });
+          //And these lines add the tweets to each container stack - - ->
+          //In For loop (5 - streams.users[key].length) ensures that 5 containers are created regardless of how many tweets there are.
+          for (let i = 0; i < streams.users[key].length + (5 - streams.users[key].length); i++) {
+            //Creating Alpha Transparency Color - - ->
+            const alphaColor = alphaTransparency(key);
 
-            //Tweet
-            $('<p></p>').attr('class', 'sorted-tag-list-li').text(streams.home[j].user + ': ' + streams.home[j].message).css({'background-color': alphaColor, 'border': '2px solid white'}).appendTo($containerDiv);
-            $containerDiv.appendTo($currentHashTagStack);
+            const accessTweet = streams.users[key][i];
+            //Tweet === undefined means that there are less than 5 tweets initially and a empty divs needs to be created
+            if (accessTweet !== undefined) {
+            //Handling the Time - - ->
+            const fullDate = dateHandler(accessTweet.created_at);
+            //Container Div For Individual Sorted Tweets
+            const $containerDiv = $('<div></div>').attr('class', 'sorted-individual-tweet-container').css({'border': '2px solid ' + colorObj[accessTweet.user], 'background-color': alphaColor}).appendTo($currentTweetStack);
+
+            const $currentUserTime = $('<p></p>').attr('class', 'tweet-time').css({'background-color': colorObj[accessTweet.user], 'border': '2px solid white'}).text(fullDate).appendTo($containerDiv);
+
+            const $currentUserTweet = $('<p></p>').attr('class', 'sorted-tweet-list-li').css({'border': '2px solid white'}).text(accessTweet.message).appendTo($containerDiv);
+
+            //First Sorted Tweet is Bold
+            if (i === 0) {
+              $($currentUserTweet).addClass('js-is-bolded')
             }
+            //Changes Color When Hovering over Sorted Tweets
+            $containerDiv.hover(function() {
+              $(this).css({'background-color': colorObj[accessTweet.user], 'border': '2px solid white'})
+            }, function () {
+              $(this).css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[accessTweet.user]});
+            });
+          } else {
+            //Creates Empty Containers.
+            const $containerDiv = $('<div></div>').attr('class', 'empty-sorted-tweet').css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[key]}).appendTo($currentTweetStack).hover(function() {
+              $(this).css({'background-color': colorObj[key], 'border': '2px solid white'});
+            }, function () {
+              $(this).css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[key]})
+            });
+          }
+        }
+      }
+    }
+
+    const repopulateSortedContainer = function () {
+      $('.current-tweet-stack').html('');
+
+      for (let i = streams.home.length - 1; i >= 0; i--) {
+        const accessTweet = streams.home[i];
+
+        const alphaColor = alphaTransparency(accessTweet.user);
+
+        //Handling the Time for Sorted Timeline Ind tweet
+        const fullDate = dateHandler(accessTweet.created_at);
+
+        //For Sorted Tweet Stack after pressing button;
+        const $containerDiv = $('<div></div>').attr('class', 'sorted-individual-tweet-container').css({'border': '2px solid ' + colorObj[accessTweet.user], 'background-color': alphaColor});
+
+        const $currentDate = $('<p></p>').attr('class', 'tweet-time').text(fullDate).css({'background-color': colorObj[accessTweet.user], 'border': '2px solid white'}).appendTo($containerDiv);
+
+        const $currentUserTweet = $('<p></p>').attr('class', 'sorted-tweet-list-li').css({'background-color': alphaColor, 'border': '2px solid white'}).text(accessTweet.message).appendTo($containerDiv);
+
+        //Highlighting Sorted tweets on Hover after pressing More Tweets.
+        $($containerDiv).hover(function() {
+          $(this).css({'background-color': colorObj[accessTweet.user], 'border': '2px solid white'})
+      }, function () {
+          $(this).css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[accessTweet.user]})
+      }).appendTo('#' + accessTweet.user + '-tweet-stack');
+
+        //Bolds the First sorted-tweet-list-li of each stack.
+        $('#' + accessTweet.user + '-tweet-stack').children('.sorted-individual-tweet-container').eq(0).children('p.sorted-tweet-list-li').addClass('js-is-bolded');
+
+        //These lines limit ensure that 5 containers are shown but also limit the Sorted Timeline to the 5 most recent tweets.
+        const $userTweetStackChildren = $('#' + accessTweet.user + '-tweet-stack').children('.sorted-individual-tweet-container');
+
+        if ($userTweetStackChildren.length > 5) {
+          $userTweetStackChildren.eq($userTweetStackChildren.length - 1).remove();
+        }
+      }
+        //These Lines add any remaining empty containers that would be necesary.
+        for (let key in streams.users) {
+          const alphaColor = alphaTransparency(key);
+          for(let i = $('#' + key + '-tweet-stack').children().length; i < 5; i++) {
+            //Creates Empty ContainersEmpty Containers;
+            let $containerDiv = $('<div></div>').attr('class', 'empty-sorted-tweet').css({'border': '2px solid ' + colorObj[key], 'background-color': alphaColor}).appendTo('#' + key + '-tweet-stack').hover(function () {
+              $(this).css({'background-color': colorObj[key], 'border': '2px solid white'});
+            }, function () {
+              $(this).css({'background-color': 'initial', 'border': '2px solid ' + colorObj[key]});
+            });
+            // const $currentUserTweet = $('<p></p>').appendTo($containerDiv);
+          }
+      }
+    }
+
+    const stylizeHashtagContainer = function ($body) {
+        //If Hashtag Timeline already exists, delete its contents so it can be remade, otherwise on startup, build the containers and title that hold contents
+        let saveTag;
+        const coolTags = tags.filter(x => (x[0] === '#'));
+        for (let i = 0; i < coolTags.length; i++) {
+          coolTags[i] = coolTags[i].split('');
+          coolTags[i].shift('');
+          coolTags[i] = coolTags[i].join('')
+        if($('.' + coolTags[i]).hasClass('js-is-displayed')){
+          saveTag = coolTags[i];
+         }
+        }
+
+        let $cool = $('.hashtag-timeline');
+        if ($cool.children('div').length > 0) {
+            $cool.empty();
+        }
+        let caps = 'hashtags';
+        if (saveTag !== undefined) {
+          caps = saveTag;
+      }
+
+          const $hashTagtitle = $('<h3></h3>').text('-- ' + caps + ' --').addClass('js-is-underlined').attr({'class': 'section-title hashtag-sorted-title', 'id': 'hashtag-sorted-title'}).appendTo($('.hashtag-timeline'));
+
+        //This for loop creates hashtag containers
+        for (let i = 0; i < tags.length; i++) {
+        //Removing the hash sign so that id and class and be defined
+          let hashCheck = tags[i].split('');
+          if (hashCheck[0] === '#') {
+            hashCheck.shift()
+            hashCheck = hashCheck.join('');
+            const $currentSortedHashtagDeck = $('<div></div>').attr('class','hashtag-name-declarations ' + hashCheck).appendTo($('.hashtag-timeline'));
+
+            if (tags[i] === '#' + saveTag) {
+            $currentSortedHashtagDeck.addClass('js-is-displayed');
+            $('.hashtag-sorted-title').addClass('js-is-displayed');
+          }
+
+            const $currentHashTagStack = $('<div></div>').attr({'id': hashCheck + '-hashtag-stack', 'class': 'current-hashtag-stack'}).appendTo($currentSortedHashtagDeck);
+
+            for (let j = 0; j < streams.home.length; j++) {
+              const accessTweet = streams.home[j];
+              if (streams.home[j] !== undefined) {
+                let checkTag = streams.home[j].message;
+                checkTag = checkTag.split('');
+                  if (checkTag.indexOf('#') !== -1) {
+                    checkTag = checkTag.splice(checkTag.indexOf('#')).join('')
+
+                  if ('#' + hashCheck === checkTag) {
+                  //Alpha Transparency!
+                  const alphaColor = alphaTransparency(accessTweet.user)
+                  //Container that holds time & tweet.
+                  const $containerDiv = $('<div></div>').attr('class', 'sorted-individual-tag-container ' + accessTweet.user + '-tag').css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[streams.home[j].user]});
+                  //Time
+                  $('<p></p>').text(dateHandler(accessTweet.created_at)).attr('class', 'tweet-time').css({'background-color': colorObj[accessTweet.user], 'border': '2px solid white'}).appendTo($containerDiv);
+
+                  //Highlighting on Hover
+                  $($containerDiv).hover(function() {
+                  $(this).css({'background-color': colorObj[accessTweet.user], 'border': '2px solid white'})
+                }, function () {
+                  $(this).css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[accessTweet.user]})
+                });
+
+                  //Tweet
+                  $('<p></p>').attr('class', 'sorted-tag-list-li').text(accessTweet.user + ': ' + accessTweet.message).css({'background-color': alphaColor, 'border': '2px solid white'}).appendTo($containerDiv);
+                  $containerDiv.appendTo($currentHashTagStack);
+                  }
           }
         }
       }
       //This While loop creates the remaining containers.
       while ($('#' +  hashCheck + '-hashtag-stack').children().length < 5){
           //Creates Empty Divs...
-          let $containerDiv = $('<div></div>').attr('class', 'empty-sorted-tag').css({'border': '2px solid salmon', 'background-color': 'lightsalmon'}).appendTo($currentHashTagStack);
+          let $containerDiv = $('<div></div>').attr('class', 'empty-sorted-tag').css({'border': '2px solid #FA8072A6', 'background-color': '#FA8072A6'}).hover(function() {
+                  $(this).css({'background-color': '#FA8072', 'border': '2px solid white'})
+                }, function () {
+                  $(this).css({'background-color': '#FA8072A6', 'border': '2px solid #FA8072'})
+                }).appendTo($currentHashTagStack);
+          }
+        }
       }
     }
-  }
-});
+
+    const repopulateHashTagContainer = function () {
+      $('.current-hashtag-stack').html('');
+      for (let i = streams.home.length - 1; i >= 0; i--) {
+        const accessTweet = streams.home[i];
+        const alphaColor = alphaTransparency(accessTweet.user);
+        let hashCheck = accessTweet.message.split('');
+          if (hashCheck.indexOf('#') !== -1) {
+            hashCheck = hashCheck.splice(hashCheck.indexOf('#') + 1);
+            hashCheck = hashCheck.join('');
+
+            const $containerDiv = $('<div></div>').css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[accessTweet.user]}).attr('class', 'sorted-individual-tag-container ' + accessTweet.user).appendTo('#' + hashCheck + '-hashtag-stack');
+
+            const $currentDate = $('<p></p>').attr('class', 'tweet-time').text(dateHandler(accessTweet.created_at) + ', ').css({'background-color': colorObj[accessTweet.user], 'border': '2px solid white'}).appendTo($containerDiv);
+
+            const $currentUserTweet = $('<p></p>').attr('class', 'sorted-tag-list-li').text(accessTweet.user + ': ' + accessTweet.message).css({'background-color': alphaColor, 'border': '2px solid white'}).appendTo($containerDiv);
+
+          //Highlighting Hashtags on Hover after pressing More Tweets.
+          $($containerDiv).hover(function() {
+              $(this).css({'background-color': colorObj[accessTweet.user], 'border': '1px solid white'})
+            }, function () {
+              $(this).css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[accessTweet.user]})
+            });
+
+            //Bolds the First sorted-tag-list-li of each stack.
+            $('#' + hashCheck + '-hashtag-stack').children('.sorted-individual-tag-container').eq(0).children('p.sorted-tag-list-li').addClass('js-is-bolded');
+
+            const $hashTagStackChildren = $('#' + hashCheck + '-hashtag-stack').children();
+
+            if ($hashTagStackChildren.length > 5) {
+              $hashTagStackChildren.eq($hashTagStackChildren.length - 1).remove();
+            }
+          }
+        }
+        //Remaining Empty Containers:
+        const coolTags = tags.filter(x => (x[0] === '#'));
+        for (let i = 0; i < coolTags.length; i++) {
+          while ($(coolTags[i] + '-hashtag-stack').children().length < 5) {
+            //Empty Containers;
+            let $containerDiv = $('<div></div>').attr('class', 'empty-sorted-tag').css({'border': '2px solid #FA8072', 'background-color': '#FA8072A6'}).hover(function () {
+              $(this).css({'background-color': '#FA8072', 'border': '2px solid white'})
+            }, function () {
+              $(this).css({'background-color': '#FA8072A6', 'border': '2px solid #FA8072'})
+            }).appendTo(coolTags[i] + '-hashtag-stack');
+
+             let $currentUserTag = $('<p></p>').appendTo($containerDiv);
+          }
+        }
+      }
+
+
+    $(document).ready(function(){
+      const $body = $('body');
+      $body.html('');
+
+      //Creating the Tweet Timeline for the First Time - - ->
+      const $tweetTimeline = $('<div></div>').attr({'id': 'tweet-timeline-container','class': 'section-container'}).appendTo('body');
+
+      //Tweet Timeline Title - - ->
+      $('<h3></h3>').text('Tweet Timeline').attr('class', 'section-title tweet-timeline-title').appendTo($tweetTimeline)
+
+      let index = 0;
+      while (index <= streams.home.length) {
+      //When the index exceeds the amount of tweets on initial tweet timeline setup then the program creates one more container that holds the 11th, or deprecating tweet.
+      if (index === streams.home.length) {
+        //The 11th Tweet Container
+        $('<div></div>').html(stylizeTweet('', '', '', index)).attr({'id': 'otc' + index, 'class': 'outer-tweet-container otc11'}).appendTo($tweetTimeline);
+       break;
+      }
+
+      //Outer Tweet Containers - - ->
+      const accessTweet = streams.home[index];
+
+      $('<div></div>').html(stylizeTweet(accessTweet.user +': ', accessTweet.message, dateHandler(accessTweet.created_at), index)).attr({'id': 'otc' + index, 'class': 'outer-tweet-container'}).appendTo($tweetTimeline);
+      index += 1;
+      }
+      //This Function adds Color to the Tweet Timeline Containers.
+      tweetTimelineColors();
+
+      const $oneMoreTweetBtn = $('<button></button>').text('More Tweets!').on('click', moreTweets.bind(null, [false, $body])).attr('class', 'one-more-tweet-button').appendTo($tweetTimeline);
+
+      //Sorted Section Timeline Inital Set-up - - ->
+      const $sortedTweetsContainer = $('<div></div>').attr({'id': 'sorted-timeline', 'class': 'section-container sorted-timeline'}).appendTo($body);
+
+      stylizeSortedContainer($body)
+
+      //Hashtag Section Timeline Initial Set-up - - ->
+      const $hashtagTweetsContainer = $('<div></div>').attr({'id': 'hashtag-timeline', 'class': 'section-container hashtag-timeline'}).appendTo($body);
+
+      stylizeHashtagContainer($body);
+
+      //Custom Tweet Message Section - - ->
+      const $userEntryContainerDiv = $('<div></div>').appendTo($body).attr('class', 'custom-user-input')
+      const $userHandleInput = $('<input></input>').val('Your Handle').appendTo($userEntryContainerDiv);
+
+      const $userTweetInput = $('<input></input>').val('Your Tweet').appendTo($userEntryContainerDiv);
+      const $userEntryButton = $('<button></buton>').text('Submit Tweet').appendTo($userEntryContainerDiv);
+
+      //User Handle Input
+      $userHandleInput.click(function(event) {
+      event.preventDefault();
+      let test = $userHandleInput.val();
+      if (test === 'Your Handle') {
+      $($userHandleInput).val('');
+      }
+      }).keyup(function (event) {
+      if (event.keyCode === 13) {
+      event.preventDefault();
+      if ((!$userHandleInput.val() || !$userTweetInput.val()) || ($userHandleInput.val() === 'Your Handle' || $userTweetInput.val() === 'Your Tweet')){
+        alert('failed');
+        return;
+      }
+      alert($userHandleInput.val() + ' ' + $userTweetInput.val());
+      }
+      });
+
+      //Tweet Input
+      $userTweetInput.click(function (event) {
+      event.preventDefault();
+      let test = $userTweetInput.val();
+      if (test === 'Your Tweet') {
+      $($userTweetInput).val('');
+      }
+      }).keyup(function (event) {
+      if (event.keyCode === 13) {
+      event.preventDefault();
+      if ((!$userHandleInput.val() || !$userTweetInput.val()) || ($userHandleInput.val() === 'Your Handle' || $userTweetInput.val() === 'Your Tweet')){
+        alert('failed');
+        return;
+      }
+      alert($userHandleInput.val() + ' ' + $userTweetInput.val());
+      }
+      });
+
+      //Enter Button
+      $userEntryButton.click(function(event) {
+      event.preventDefault();
+      if ((!$userHandleInput.val() || !$userTweetInput.val()) || ($userHandleInput.val() === 'Your Handle' || $userTweetInput.val() === 'Your Tweet')){
+        alert('failed');
+        return;
+      }
+      //This function checks to see if there is a hash tag and then if there is, it adds the tag to the taglist.
+      checkHash($userTweetInput.val());
+      writeTweet($userTweetInput.val())
+      moreTweets(true, $body)
+      //Makes links in tweet clickable-
+      $('a').on('click', activateLink);
+      });
+
+    //Makes Tweet Timeline Links clickable-
+    $('a').on('click', activateLink);
+
+    //End of $(document).ready();
+    });
     </script>
   </body>
 </html>
+

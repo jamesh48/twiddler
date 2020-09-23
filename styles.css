@@ -140,11 +140,16 @@ a.tweet-handle {
 =====================
  */
 
+ /* change to display none */
  .sorted-timeline {
    display: none;
  }
 
- .sortedNameDeclarations {
+ #sorted-title {
+   color: #FFFFFF;
+ }
+
+ .sorted-name-timeline {
   display: none;
   background-color: white;
   border: 4px solid darkslategray;
@@ -206,6 +211,7 @@ Hashtag Section
 =====================
 */
 
+/* Change to Display: none */
 .hashtag-tweets-container {
   display: none;
   border-radius: 10px;
@@ -215,6 +221,7 @@ Hashtag Section
   display: inline-block;
 }
 
+/* Change to Display: none */
 .hashtag-name-declarations {
   display: none;
   background-color: white;
@@ -222,8 +229,9 @@ Hashtag Section
   border: 4px solid darkslategray;
 }
 
-#hashtag-sorted-title {
-  background-color: salmon;
+.hashtag-sorted-title {
+  display: none;
+  background-color: #FA8072;
   color: white;
   border: 4px solid darkslategray;
   border-bottom: none;
