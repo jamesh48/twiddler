@@ -1,0 +1,30 @@
+//Process
+Initially I dove in and after about a week I had a working version with very few helper function calls. It ran but the code wasn't modular.
+
+In particular, the program was deleting and recreating the sorted and hashtag containers and this was coded for several times.
+
+In the second week, I was able to consolidate this repetitive code into a series of functions that are called both at initialization and when the more tweets button is clicked.
+
+//HTML
+
+
+//Colors
+
+For my main styling (a site I want to use), I went with only moderately expanding the default html styling, but put a significant amount of effort into introducing pastel colors on initialization and continuing to dynamically produce those colors as more tweets are introduced.
+
+The dynamic aspect was particurally challenging as I really had to continuously investigate and carefully edit the HTML structure, with its elements and their class and id names, and also had to learn how to use jquery selectors to target children elements in particular.
+
+  //colorObj
+  I questionably used (colorObj) as a global variable, with the key value pairs of user: color, that is dynamically created at initialization with random colors for each user, each time.
+
+  As a global variable, I could access colorObj throughout the program. I acknowledged its main short coming that it is only created at initialization and since it was not part of a function, I could not really access and edit it to add an unknown number of additional custom users/color combinations without hard-coding.
+
+  Since the writeTweet function in dataGenerator only calls for a single global visitor variable, I added a subtle hardcode in colorObjs initialization, so that it is provisioned with an additional property of 'Custom User': color, that is later accessed when the user adds a custom tweet. To prevent the user from introducing other userhandles, the userhandle input becomes uneditable after 'Submit Tweet' is clicked, just as if they are 'signed in'.
+
+//Hashtag Functionality
+
+I included hashtag functionality to work similarily to the sorted handle section. So if the user clicks on a hashtag link, it will reveal a list of those tweets with that particular hashtag.
+
+Although we were told to not edit the data generator file, I did not receive a indication that we could not mutate the arrays in the data generator file with code from the index.html file.
+
+Therefore a really novel part of this program is that if the user introduces a custom hashtag, the hashtag is pushed to the hashtag array in data generator, and then- just like in real social media, the other users will start using that hashtag as well. :D

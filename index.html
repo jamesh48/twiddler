@@ -11,7 +11,7 @@
     <script>
       //Global Variables - - ->
       //Visitor
-      let visitor = 'Julian';
+      let visitor = 'Custom User';
       //Setting up for Color Coding - - ->
       let colorObj = {};
       //ref: https://www.incengine.com/?name=Pastel-HTML-Color-Codes&art=pastel_colors
@@ -23,14 +23,17 @@
         colorArray[i] = colorArray[j];
         colorArray[j] = temp;
       }
+      //+ 1 to create a color for the Custom User
+      colorArray = colorArray.slice(0, window.users.length + 1);
 
-      colorArray = colorArray.slice(0, window.users.length);
-
-      for(let i = 0; i < window.users.length; i++) {
-        colorObj[window.users[i]]= colorArray[i];
-      }
-
-      colorObj[visitor] = '#800000';
+      for(let i = 0; i < window.users.length + 1; i++) {
+        if (window.users[i]) {
+          colorObj[window.users[i]]= colorArray[i];
+          } else {
+            //On Initialization, colorObj[visitor] is 'Custom User' and creates an new property for colorObj whose key: value pair is 'Custom User: colorArray[i]; I'll have the program use this unique color.
+            colorObj[visitor] = colorArray[i];
+          }
+        }
 
       //Functions
       //Hash Check - - ->
@@ -39,11 +42,13 @@
         if (message.indexOf('#') !== -1) {
           message = message.splice(message.indexOf('#'));
           message = message.join('');
+          //Checks to see if tag is already in tag array, returns if so.
           for ( let i = 0; i < tags.length; i++){
             if (tags[i] === message){
               return;
             }
           }
+          //Other-wise adds the new tag to the tags array.
           tags.push(message)
         }
       }
@@ -157,7 +162,16 @@
       }
       return dateString += (date + ', ' + year + ' || ' + time);
 }
-      //More Tweets Function
+
+      //Bold & Beautiful Function
+      const boldNBeautiful = function ($elem, indicator) {
+        //Bold
+        $elem.children('.sorted-individual-' + indicator + '-container').eq(0).attr('id', indicator + '-tweet-0');
+        //Rounds the edges of the last sorted tweet
+        $elem.children('.sorted-individual-' + indicator+ '-container').eq(4).attr('id', indicator + '-tweet-4');
+      }
+
+      //More Tweets Function- - ->
       const moreTweets = function (indicator, $body) {
           //Reveals Tweet Container 11...
          $('.otc11').addClass('js-is-displayed');
@@ -288,12 +302,16 @@
 
             const $currentUserTime = $('<p></p>').attr('class', 'tweet-time').css({'background-color': colorObj[accessTweet.user], 'border': '2px solid white'}).text(fullDate).appendTo($containerDiv);
 
-            const $currentUserTweet = $('<p></p>').attr('class', 'sorted-tweet-list-li').css({'border': '2px solid white'}).text(accessTweet.message).appendTo($containerDiv);
+            const $currentUserTweet = $('<p></p>').attr('class', 'sorted-tweet-list-li').css({'border': '2px solid white', 'background-color': alphaColor}).text(accessTweet.message).appendTo($containerDiv);
 
-            //First Sorted Tweet is Bold
-            if (i === 0) {
-              $($currentUserTweet).addClass('js-is-bolded')
-            }
+            //Special Styling for First Sorted Tweet (bold)
+            // if (i === 0) {
+            //   $($containerDiv).attr('id', 'sorted-tweet-0')
+            // }
+            // //Special Styling for Last Sorted Tweet (round edges);
+            // if (i === 4) {
+            //   $($containerDiv).attr('id', 'sorted-tweet-4')
+            // }
             //Changes Color When Hovering over Sorted Tweets
             $containerDiv.hover(function() {
               $(this).css({'background-color': colorObj[accessTweet.user], 'border': '2px solid white'})
@@ -302,13 +320,19 @@
             });
           } else {
             //Creates Empty Containers.
-            const $containerDiv = $('<div></div>').attr('class', 'empty-sorted-tweet').css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[key]}).appendTo($currentTweetStack).hover(function() {
+            const $containerDiv = $('<div></div>').attr('class', 'sorted-individual-tweet-container empty-sorted-tweet').css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[key]}).appendTo($currentTweetStack).hover(function() {
               $(this).css({'background-color': colorObj[key], 'border': '2px solid white'});
             }, function () {
               $(this).css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[key]})
             });
+            // //Special Styling for Last Sorted Tweet (round edges);
+            // if (i === 4) {
+            //   $($containerDiv).attr('id', 'sorted-tweet-4')
+            // }
           }
         }
+        const elem = $currentTweetStack;
+        boldNBeautiful(elem, 'tweet')
       }
     }
 
@@ -337,9 +361,6 @@
           $(this).css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[accessTweet.user]})
       }).appendTo('#' + accessTweet.user + '-tweet-stack');
 
-        //Bolds the First sorted-tweet-list-li of each stack.
-        $('#' + accessTweet.user + '-tweet-stack').children('.sorted-individual-tweet-container').eq(0).children('p.sorted-tweet-list-li').addClass('js-is-bolded');
-
         //These lines limit ensure that 5 containers are shown but also limit the Sorted Timeline to the 5 most recent tweets.
         const $userTweetStackChildren = $('#' + accessTweet.user + '-tweet-stack').children('.sorted-individual-tweet-container');
 
@@ -352,13 +373,15 @@
           const alphaColor = alphaTransparency(key);
           for(let i = $('#' + key + '-tweet-stack').children().length; i < 5; i++) {
             //Creates Empty ContainersEmpty Containers;
-            let $containerDiv = $('<div></div>').attr('class', 'empty-sorted-tweet').css({'border': '2px solid ' + colorObj[key], 'background-color': alphaColor}).appendTo('#' + key + '-tweet-stack').hover(function () {
+            let $containerDiv = $('<div></div>').attr('class', 'sorted-individual-tweet-container empty-sorted-tweet').css({'border': '2px solid ' + colorObj[key], 'background-color': alphaColor}).appendTo('#' + key + '-tweet-stack').hover(function () {
               $(this).css({'background-color': colorObj[key], 'border': '2px solid white'});
             }, function () {
-              $(this).css({'background-color': 'initial', 'border': '2px solid ' + colorObj[key]});
+              $(this).css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[key]});
             });
-            // const $currentUserTweet = $('<p></p>').appendTo($containerDiv);
           }
+        //Bolds the first sorted-tweet-list-li of each stack, and rounds edges of last container in tweet stack.
+        const elem = $('#' + key + '-tweet-stack');
+        boldNBeautiful(elem, 'tweet');
       }
     }
 
@@ -432,15 +455,19 @@
           }
         }
       }
+
       //This While loop creates the remaining containers.
       while ($('#' +  hashCheck + '-hashtag-stack').children().length < 5){
           //Creates Empty Divs...
-          let $containerDiv = $('<div></div>').attr('class', 'empty-sorted-tag').css({'border': '2px solid #FA8072A6', 'background-color': '#FA8072A6'}).hover(function() {
-                  $(this).css({'background-color': '#FA8072', 'border': '2px solid white'})
+          let $containerDiv = $('<div></div>').attr('class', 'sorted-individual-tag-container empty-sorted-tag').css({'border': '2px solid #FA8072A6', 'background-color': '#FA8072A6'}).hover(function() {
+                  $(this).css({'background-color': '#FA8072', 'border': '2px solid #FFFFFF'})
                 }, function () {
                   $(this).css({'background-color': '#FA8072A6', 'border': '2px solid #FA8072'})
                 }).appendTo($currentHashTagStack);
           }
+          //First Tag is Bold, last tag container has borrom rounded edges.
+          const elem = $currentHashTagStack;
+          boldNBeautiful(elem, 'tag')
         }
       }
     }
@@ -468,9 +495,6 @@
               $(this).css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[accessTweet.user]})
             });
 
-            //Bolds the First sorted-tag-list-li of each stack.
-            $('#' + hashCheck + '-hashtag-stack').children('.sorted-individual-tag-container').eq(0).children('p.sorted-tag-list-li').addClass('js-is-bolded');
-
             const $hashTagStackChildren = $('#' + hashCheck + '-hashtag-stack').children();
 
             if ($hashTagStackChildren.length > 5) {
@@ -483,7 +507,7 @@
         for (let i = 0; i < coolTags.length; i++) {
           while ($(coolTags[i] + '-hashtag-stack').children().length < 5) {
             //Empty Containers;
-            let $containerDiv = $('<div></div>').attr('class', 'empty-sorted-tag').css({'border': '2px solid #FA8072', 'background-color': '#FA8072A6'}).hover(function () {
+            let $containerDiv = $('<div></div>').attr('class', 'sorted-individual-tag-container empty-sorted-tag').css({'border': '2px solid #FA8072', 'background-color': '#FA8072A6'}).hover(function () {
               $(this).css({'background-color': '#FA8072', 'border': '2px solid white'})
             }, function () {
               $(this).css({'background-color': '#FA8072A6', 'border': '2px solid #FA8072'})
@@ -491,10 +515,50 @@
 
              let $currentUserTag = $('<p></p>').appendTo($containerDiv);
           }
+          //Bolds the First sorted-tag-list-li of each stack, border-radius on last sorted-tag-list-li of each stack.
+          const elem = $(coolTags[i] + '-hashtag-stack')
+          boldNBeautiful(elem, 'tag')
         }
       }
 
+      const newCustomTweet = function (event) {
+      event[0].preventDefault();
+      const customHandleVal = $(arguments[0][1]).val();
+      const customHandleAccess = $(arguments[0][1]);
+      const customTweetVal = $(arguments[0][2]).val();
+      const $body = $(arguments[0][3])
 
+      if (!customHandleVal || !customTweetVal) {
+        alert('failed');
+        return;
+      }
+
+      const signedInTest = (/\(-signed in\)/g).test(customHandleVal);
+
+      if (!signedInTest) {
+        visitor = customHandleVal;
+        customHandleAccess.prop("readonly", true).css({'background-color': 'darkslategrey', 'color': 'white'}).val(customHandleVal + ' (-signed in)');
+      }
+
+      //Replaces the colorObj "Custom User", dummy property with inputted visitor/color as property.
+      for (let key in colorObj) {
+        if (key === 'Custom User') {
+          let saveColor = colorObj[key];
+          delete colorObj[key];
+          colorObj[visitor] = saveColor
+        }
+      }
+
+        //This part checks to see if there is a hash tag and if there is, it adds the tag to the taglist.
+        checkHash(customTweetVal);
+        writeTweet(customTweetVal)
+        moreTweets(true, $body)
+
+        //Makes links clickable-
+        $('a').on('click', activateLink);
+      }
+
+    //Document.ready function- - ->
     $(document).ready(function(){
       const $body = $('body');
       $body.html('');
@@ -537,9 +601,11 @@
 
       //Custom Tweet Message Section - - ->
       const $userEntryContainerDiv = $('<div></div>').appendTo($body).attr('class', 'custom-user-input')
-      const $userHandleInput = $('<input></input>').val('Your Handle').appendTo($userEntryContainerDiv);
 
-      const $userTweetInput = $('<input></input>').val('Your Tweet').appendTo($userEntryContainerDiv);
+      const $userHandleInput = $('<input></input>').attr('placeholder', 'Your Handle').appendTo($userEntryContainerDiv);
+
+      const $userTweetInput = $('<input></input>').attr('placeholder', 'Your Tweet').appendTo($userEntryContainerDiv);
+
       const $userEntryButton = $('<button></buton>').text('Submit Tweet').appendTo($userEntryContainerDiv);
 
       //User Handle Input
@@ -579,19 +645,8 @@
       });
 
       //Enter Button
-      $userEntryButton.click(function(event) {
-      event.preventDefault();
-      if ((!$userHandleInput.val() || !$userTweetInput.val()) || ($userHandleInput.val() === 'Your Handle' || $userTweetInput.val() === 'Your Tweet')){
-        alert('failed');
-        return;
-      }
-      //This function checks to see if there is a hash tag and then if there is, it adds the tag to the taglist.
-      checkHash($userTweetInput.val());
-      writeTweet($userTweetInput.val())
-      moreTweets(true, $body)
-      //Makes links in tweet clickable-
-      $('a').on('click', activateLink);
-      });
+      $userEntryButton.click(
+      newCustomTweet.bind(null, [event, $userHandleInput, $userTweetInput, $body]));
 
     //Makes Tweet Timeline Links clickable-
     $('a').on('click', activateLink);

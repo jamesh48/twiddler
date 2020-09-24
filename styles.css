@@ -130,7 +130,7 @@ a.tweet-handle {
 }
 
 
-.section-container.sorted-timeline, .section-container.hashtag-tweets-container {
+.section-container.sorted-timeline, .section-container.hashtag-timeline {
   margin-top: 20px;
 }
 
@@ -156,15 +156,15 @@ a.tweet-handle {
   border-radius: 0 0 10px 10px;
 }
 
+
 .sorted-individual-tweet-container, .sorted-individual-tag-container {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  height: 74px;
 }
 
 .empty-sorted-tweet, .empty-sorted-tag {
-  height: 74px;
+  height: 40px;
 }
 
 .sorted-individual-tweet-container:hover, .sorted-individual-tag-container:hover {
@@ -173,14 +173,11 @@ a.tweet-handle {
 
 .sorted-individual-tweet-container p {
   display: inline-block;
+  padding-right: 20px;
 }
 
-/* .sorted-individual-tweet-container p.sorted-tweet-list-li {
-  margin-left: 5px;
-} */
-
-.sorted-individual-tag-container p.sorted-tag-list-li {
-  /* margin-left: 5px; */
+#tweet-tweet-0 p.sorted-tweet-list-li {
+  font-weight: 400;
 }
 
 .sorted-timeline {
@@ -211,10 +208,19 @@ Hashtag Section
 =====================
 */
 
-/* Change to Display: none */
+/* Change to Display: none  */
 .hashtag-tweets-container {
   display: none;
   border-radius: 10px;
+}
+
+/* Bold The first */
+#tag-tweet-0 p.sorted-tag-list-li {
+  font-weight: 400;
+}
+/* Rounds the corners of the last */
+#tag-tweet-4, #tweet-tweet-4 {
+  border-radius: 0 0 6px 6px;
 }
 
 .sorted-individual-tag-container p {
