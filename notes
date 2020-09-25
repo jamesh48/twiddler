@@ -28,3 +28,7 @@ I included hashtag functionality to work similarily to the sorted handle section
 Although we were told to not edit the data generator file, I did not receive a indication that we could not mutate the arrays in the data generator file with code from the index.html file.
 
 Therefore a really novel part of this program is that if the user introduces a custom hashtag, the hashtag is pushed to the hashtag array in data generator, and then- just like in real social media, the other users will start using that hashtag as well. :D
+
+//To Do- - ->
+See about increasing text size when hovering over tweet timeline containeers
+//Increase Functionality for pressing enter instead of click on submit tweet.

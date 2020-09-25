@@ -1,4 +1,4 @@
-body a {
+body a, body button {
   cursor: pointer;
 }
 h2, h3, h4 {
@@ -57,9 +57,57 @@ Font
 
 /*
 =====================
+Custom User Input Section
+=====================
+*/
+
+input:focus {
+  outline: none;
+}
+
+.cool-form {
+  border: 0;
+  padding: 5px;
+  border-radius: 20px;
+  box-shadow: 0 0 15px 4px darkslategrey;
+  text-align: center;
+}
+
+.custom-user-handle {
+  text-align: center;
+  width: 20%;
+  border: 2px solid #2f4f4f;
+  border-radius: 10px 0 0 10px;
+}
+.custom-user-tweet {
+  text-align: center;
+  width: 60%;
+  border: 2px solid #2f4f4f;
+}
+
+.color-white::-webkit-input-placeholder {
+  color: #FFFFFF;
+}
+
+.color-white {
+  color: #FFFFFF;
+}
+
+.submit-tweet-button {
+  width: 15%;
+  border: 2px solid #2f4f4f;
+  border-radius: 0 10px 10px 0;
+}
+
+/*
+=====================
 Tweet Timeline Section
 =====================
 */
+
+.tweet-timeline-container {
+  margin-top: 10px;
+}
 .tweet-timeline-title {
   background-color: royalblue;
   color: white;
@@ -304,3 +352,5 @@ Buttons
   border: 4px solid white;
   font-size: 30px;
 }
+
+

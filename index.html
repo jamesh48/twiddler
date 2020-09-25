@@ -53,6 +53,37 @@
         }
       }
 
+      //xAmpersand- - ->
+      const xAmpersand = function (event) {
+        if (event.shiftKey && event.keyCode === 50) {
+          let test = $('.custom-user-handle').val().split('');
+          while (test.indexOf('@') !== -1) {
+            test.splice(test.indexOf('@'), 1);
+          }
+          test = test.join('')
+
+          $('.custom-user-handle').val('').attr({'placeholder': 'No @ Sign Needed'}).css('color', 'lightslategrey')
+
+          setTimeout(function(){
+            $('.custom-user-handle').val(test).css('color', 'black').attr('placeholder', 'Your Handle')
+          }, 1000);
+        }
+      }
+
+      //validateHash- - ->
+      const validateHash = function (event) {
+
+        let test = $('.custom-user-input').val();
+        if (test) {
+          $('.custom-user-input').css('background-color', alphaTransparency(colorObj[visitor]));
+        }
+        test.split('');
+        if (test.indexOf('#') !== -1) {
+          $('.custom-user-handle').css('color', 'blue')
+        }
+      }
+
+
       //Alpha Transparency Color Function - - ->
       const alphaTransparency = function (user, indicator) {
         let alphaColor = colorObj[user].split('');
@@ -286,7 +317,7 @@
           //Adds the Container Stack for each User Handle - - ->
           const $currentTweetStack = $('<div></div>').attr({'id': key + '-tweet-stack', 'class': 'current-tweet-stack'}).appendTo($currentSortedTweetDeck);
 
-          //And these lines add the tweets to each container stack - - ->
+          //And these lines add the tweets to each container stack- - ->
           //In For loop (5 - streams.users[key].length) ensures that 5 containers are created regardless of how many tweets there are.
           for (let i = 0; i < streams.users[key].length + (5 - streams.users[key].length); i++) {
             //Creating Alpha Transparency Color - - ->
@@ -325,10 +356,6 @@
             }, function () {
               $(this).css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[key]})
             });
-            // //Special Styling for Last Sorted Tweet (round edges);
-            // if (i === 4) {
-            //   $($containerDiv).attr('id', 'sorted-tweet-4')
-            // }
           }
         }
         const elem = $currentTweetStack;
@@ -537,7 +564,7 @@
 
       if (!signedInTest) {
         visitor = customHandleVal;
-        customHandleAccess.prop("readonly", true).css({'background-color': 'darkslategrey', 'color': 'white'}).val(customHandleVal + ' (-signed in)');
+        customHandleAccess.prop("readonly", true).val(customHandleVal + ' (-signed in)');
       }
 
       //Replaces the colorObj "Custom User", dummy property with inputted visitor/color as property.
@@ -545,10 +572,17 @@
         if (key === 'Custom User') {
           let saveColor = colorObj[key];
           delete colorObj[key];
-          colorObj[visitor] = saveColor
-        }
-      }
+          colorObj[visitor] = saveColor;
+          const alphaColor = alphaTransparency(visitor);
+          customHandleAccess.css({'background-color': alphaColor, 'color': '#FFFFFF'});
+          $('.cool-form').css({'border': '2px solid ' + alphaColor, 'background-color': colorObj[visitor],'box-shadow': '0 0 15px 4px ' + alphaColor});
+          $('.custom-user-tweet').css({'background-color': alphaColor});
+          $('.custom-user-tweet').addClass('color-white');
+          $('.submit-tweet-button').css({'background-color': alphaColor, 'color': 'white'})
 
+      }
+      $('.custom-user-tweet').val('');
+    }
         //This part checks to see if there is a hash tag and if there is, it adds the tag to the taglist.
         checkHash(customTweetVal);
         writeTweet(customTweetVal)
@@ -563,8 +597,28 @@
       const $body = $('body');
       $body.html('');
 
+
+      //Custom Tweet Message Section - - ->
+      const $customTweetForm = $('<form></form>').attr('class', 'cool-form').submit(function(event) {
+          event.preventDefault();
+          newCustomTweet([event, $userHandleInput, $userTweetInput, $body])
+      }).appendTo($body);
+
+      const $userEntryContainerDiv = $('<div></div>').appendTo($customTweetForm).attr('class', 'custom-user-input');
+
+      const $userHandleInput = $('<input></input>').attr({'class': 'custom-user-handle', 'placeholder': 'Your Handle'}).appendTo($userEntryContainerDiv);
+
+      $userHandleInput.keyup(function(event) {
+        xAmpersand(event);
+      });
+
+      const $userTweetInput = $('<input></input>').attr({'class': 'custom-user-tweet', 'placeholder': 'Your Tweet'}).appendTo($userEntryContainerDiv);
+
+      const $userEntryButton = $('<button></buton>').attr('class', 'submit-tweet-button').text('Submit Tweet').appendTo($userEntryContainerDiv);
+
+
       //Creating the Tweet Timeline for the First Time - - ->
-      const $tweetTimeline = $('<div></div>').attr({'id': 'tweet-timeline-container','class': 'section-container'}).appendTo('body');
+      const $tweetTimeline = $('<div></div>').attr({'id': 'tweet-timeline-container','class': 'section-container tweet-timeline-container'}).appendTo('body');
 
       //Tweet Timeline Title - - ->
       $('<h3></h3>').text('Tweet Timeline').attr('class', 'section-title tweet-timeline-title').appendTo($tweetTimeline)
@@ -598,55 +652,6 @@
       const $hashtagTweetsContainer = $('<div></div>').attr({'id': 'hashtag-timeline', 'class': 'section-container hashtag-timeline'}).appendTo($body);
 
       stylizeHashtagContainer($body);
-
-      //Custom Tweet Message Section - - ->
-      const $userEntryContainerDiv = $('<div></div>').appendTo($body).attr('class', 'custom-user-input')
-
-      const $userHandleInput = $('<input></input>').attr('placeholder', 'Your Handle').appendTo($userEntryContainerDiv);
-
-      const $userTweetInput = $('<input></input>').attr('placeholder', 'Your Tweet').appendTo($userEntryContainerDiv);
-
-      const $userEntryButton = $('<button></buton>').text('Submit Tweet').appendTo($userEntryContainerDiv);
-
-      //User Handle Input
-      $userHandleInput.click(function(event) {
-      event.preventDefault();
-      let test = $userHandleInput.val();
-      if (test === 'Your Handle') {
-      $($userHandleInput).val('');
-      }
-      }).keyup(function (event) {
-      if (event.keyCode === 13) {
-      event.preventDefault();
-      if ((!$userHandleInput.val() || !$userTweetInput.val()) || ($userHandleInput.val() === 'Your Handle' || $userTweetInput.val() === 'Your Tweet')){
-        alert('failed');
-        return;
-      }
-      alert($userHandleInput.val() + ' ' + $userTweetInput.val());
-      }
-      });
-
-      //Tweet Input
-      $userTweetInput.click(function (event) {
-      event.preventDefault();
-      let test = $userTweetInput.val();
-      if (test === 'Your Tweet') {
-      $($userTweetInput).val('');
-      }
-      }).keyup(function (event) {
-      if (event.keyCode === 13) {
-      event.preventDefault();
-      if ((!$userHandleInput.val() || !$userTweetInput.val()) || ($userHandleInput.val() === 'Your Handle' || $userTweetInput.val() === 'Your Tweet')){
-        alert('failed');
-        return;
-      }
-      alert($userHandleInput.val() + ' ' + $userTweetInput.val());
-      }
-      });
-
-      //Enter Button
-      $userEntryButton.click(
-      newCustomTweet.bind(null, [event, $userHandleInput, $userTweetInput, $body]));
 
     //Makes Tweet Timeline Links clickable-
     $('a').on('click', activateLink);
