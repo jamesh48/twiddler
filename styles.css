@@ -115,7 +115,7 @@ Tweet Timeline Section
   border-bottom: none;
 }
 
-.outer-tweet-container {
+.inner-tweet-container {
   border: 4px solid darkslategray;
   border-top: none;
 }
@@ -150,11 +150,11 @@ a.tweet-handle {
   margin: 0;
 }
 
-#otc0 {
+#itc0 {
   border-top: 4px solid darkslategray;
 }
 /*-The 11th Tweet-*/
-.otc11 {
+.itc11 {
   display: none;
   background-color: lightslategrey !important;
   border: 4px solid darkslategray;
@@ -243,7 +243,7 @@ a.tweet-handle {
 /*Tweet Timeline and Sorted Timeline Date Styling*/
 .inner-tweet-container .tweet-time, .tweet-time {
   font-size: 18px;
-  margin-left: 25px;
+  margin: 0 0 0 25px;
   padding: 5px 10px;
   color: white;
   border-left: none;

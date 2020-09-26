@@ -98,7 +98,6 @@
         for (let key in colorObj) {
             $('.inner-tweet-container.' + key).css('background-color', colorObj[key]);
           }
-          $('.outer-tweet-container').css('background-color', 'darkslategray');
       }
 
       //Activate Link Function - - ->
@@ -137,61 +136,64 @@
 
       //Date Handler Function - - ->
       const dateHandler = function (tweetDate) {
-      const time = tweetDate.toLocaleTimeString();
-      const year = tweetDate.getFullYear();
-      const month = tweetDate.getMonth();
-      const date = tweetDate.getDate();
-      const weekDay = tweetDate.getDay();
+      // const time = tweetDate.toLocaleTimeString();
+      // const year = tweetDate.getFullYear();
+      // const month = tweetDate.getMonth();
+      // const date = tweetDate.getDate();
+      // const weekDay = tweetDate.getDay();
 
-      let dateString = '';
-      //Handling the Day of the Week - - ->
-      if (weekDay === 0) {
-        dateString += 'Sun, ';
-      } else if (weekDay === 1) {
-        dateString += 'Mon, ';
-      } else if (weekDay === 2) {
-        dateString += 'Tues, ';
-      } else if (weekDay === 3) {
-        dateString += 'Wed, ';
-      } else if (weekDay === 4) {
-        dateString +=  'Thurs, ';
-      } else if (weekDay === 5) {
-        dateString += 'Fri, ';
-      } else if (weekDay === 6) {
-        dateString += 'Sat, ';
-      } else if (weekDay === 7) {
-        dateString += 'Sun, '
-      } else {
-        alert('weekday value not valid');
-      }
-      //Handling the Month
-      if (month === 0) {
-        dateString += 'Jan ';
-      } else if (month === 1) {
-        dateString += 'Feb ';
-      } else if (month === 2) {
-        dateString += 'Mar ';
-      } else if (month === 3) {
-        dateString += 'April ';
-      } else if (month === 4) {
-        dateString += 'May ';
-      } else if (month === 5) {
-        dateString += 'June ';
-      } else if (month === 6) {
-        dateString += 'July ';
-      } else if (month === 7) {
-        dateString += 'August ';
-      } else if (month === 8) {
-        dateString += 'Sept ';
-      } else if (month === 9) {
-        dateString += 'Oct ';
-      } else if (month === 10) {
-        dateString += 'Nov ';
-      } else if (month === 11) {
-        dateString += 'Dec ';
-      } else {
-        alert('month value is not valid');
-      }
+      // let dateString = '';
+      // //Handling the Day of the Week - - ->
+      // if (weekDay === 0) {
+      //   dateString += 'Sun, ';
+      // } else if (weekDay === 1) {
+      //   dateString += 'Mon, ';
+      // } else if (weekDay === 2) {
+      //   dateString += 'Tues, ';
+      // } else if (weekDay === 3) {
+      //   dateString += 'Wed, ';
+      // } else if (weekDay === 4) {
+      //   dateString +=  'Thurs, ';
+      // } else if (weekDay === 5) {
+      //   dateString += 'Fri, ';
+      // } else if (weekDay === 6) {
+      //   dateString += 'Sat, ';
+      // } else if (weekDay === 7) {
+      //   dateString += 'Sun, '
+      // } else {
+      //   alert('weekday value not valid');
+      // }
+      // //Handling the Month
+      // if (month === 0) {
+      //   dateString += 'Jan ';
+      // } else if (month === 1) {
+      //   dateString += 'Feb ';
+      // } else if (month === 2) {
+      //   dateString += 'Mar ';
+      // } else if (month === 3) {
+      //   dateString += 'April ';
+      // } else if (month === 4) {
+      //   dateString += 'May ';
+      // } else if (month === 5) {
+      //   dateString += 'June ';
+      // } else if (month === 6) {
+      //   dateString += 'July ';
+      // } else if (month === 7) {
+      //   dateString += 'August ';
+      // } else if (month === 8) {
+      //   dateString += 'Sept ';
+      // } else if (month === 9) {
+      //   dateString += 'Oct ';
+      // } else if (month === 10) {
+      //   dateString += 'Nov ';
+      // } else if (month === 11) {
+      //   dateString += 'Dec ';
+      // } else {
+      //   alert('month value is not valid');
+      // }
+        if (tweetDate === undefined) {
+          return 'tweet date is undefined';
+        }
       return timeago.format(tweetDate)
 
       return dateString += (date + ', ' + year + ' || ' + time);
@@ -208,41 +210,48 @@
       //More Tweets Function- - ->
       const moreTweets = function (indicator, $body) {
           //Reveals Tweet Container 11...
-         $('.otc11').addClass('js-is-displayed');
+         $('.itc11').addClass('js-is-displayed');
         //If the indicator is true, it means that the function is being called from the user submitting their own tweet, thus generateRandomTweet(); is not needed.
         if (indicator === false || indicator[0] === false) {
           //Generates a new Tweet.
           generateRandomTweet();
         }
 
-        //Saves the values and colors of the Tweet Timeline into arrays.
-        const saverArray =[];
-        const colorSaverArray = [];
-        for (let i = 0; i <= 11; i++) {
-          const saveUser = $('#itc' + i).children('a.tweet-handle').text();
-          let saveMessage = $('#itc' + i).children('p.tweet-timeline-message').text();
-          const saveHash = $('#itc' + i).children('a.hash-handle').text();
-          saveMessage = saveMessage + saveHash;
-          const saveTime = $('#itc' + i).children('p.tweet-time').text();
-          saverArray.push(stylizeTweet(saveUser, saveMessage, saveTime));
+        //Saves the values, colors, and data of each tweet in the  Tweet Timeline into an Object.
+        const testObj = {};
+          testObj['user'] = {};
+          testObj['message'] = {};
+          testObj['color'] = {};
+          testObj['date'] = {};
 
-          const currentColor = $('#itc' + i).css('background-color');
-          colorSaverArray.push(currentColor);
+        for (let i = 0; i <= 11; i++) {
+          const $currentItc = $('#itc' + i);
+
+          testObj['user'][i] = $currentItc.data('user');
+          testObj['message'][i] = $currentItc.data('message');
+          testObj['color'][i] = $currentItc.data('color');
+          testObj['date'][i] = $currentItc.data('rawDate')
+
           //Introduces New Tweet
           if (i === 0) {
             const newTweet = streams.home[streams.home.length - 1];
-            $('#itc0').html(stylizeTweet(newTweet.user + ': ', newTweet.message, dateHandler(newTweet.created_at), i).html());
-            $('#itc0').css('background-color', colorObj[newTweet.user])
+
+            $currentItc.html(stylizeTweet(newTweet.user + ': ', newTweet.message, newTweet.created_at, i).html());
+
+            $currentItc.css('background-color', colorObj[newTweet.user]).data({'rawDate': newTweet.created_at, 'message': newTweet.message, 'user': newTweet.user + ': ', 'color': colorObj[newTweet.user]})
 
           } else {
             //The rest of the tweets (itc1- itc11)
             //Accesses the preceeding tweet...
-            const prevHandle = saverArray[i - 1].children('a.tweet-handle').text();
-            let prevMessage = saverArray[i - 1].children('p.tweet-timeline-message').text();
-            const prevHash = saverArray[i - 1].children('a.hash-handle').text();
-            prevMessage = prevMessage + prevHash;
-            const prevTime = saverArray[i - 1].children('p.tweet-time').text();
-            $('#itc' + i).html(stylizeTweet(prevHandle, prevMessage, prevTime).html()).css({'background-color': colorSaverArray[i - 1]}).attr('class', 'inner-tweet-container ' + prevHandle);
+
+            let prevHandle = testObj['user'][i - 1];
+            let prevMessage = testObj['message'][i - 1];
+            let prevColor = testObj['color'][i - 1];
+            let prevTime = testObj['date'][i - 1];
+
+            $currentItc.html(stylizeTweet(prevHandle, prevMessage, prevTime).html()).css({'background-color': prevColor}).attr('class', 'inner-tweet-container ' + prevHandle);
+            $currentItc.data({'user': prevHandle, 'rawDate': prevTime, 'message': prevMessage, 'color': prevColor});
+
           }
          }
          //First if inicator is true (user created tweet is created), the sorted container is remade so that the users tweet stack is introduced.
@@ -279,11 +288,12 @@
           } else {
             message = $('<p></p>').text(message.join('')).attr('class', 'tweet-timeline-message');
           }
-
         //Stylized Time - - ->
-        const $time = $('<p></p>').text(time).attr('class', 'tweet-time').addClass('zero-margin');
+        const $time = $('<p></p>').text(dateHandler(time)).attr({'class': 'tweet-time'});
+
         //The Container that holds the user handle (a), message (p) (with hastag (a)), and time (p)
         const $innerTweetContainer = $('<div></div>').attr({'class': 'inner-tweet-container ' + userNameOnly, 'id': 'itc' + index});
+
         const $stylizedTweet = $($innerTweetContainer.append($user.add(message).add($time)));
         return $stylizedTweet;
       }
@@ -334,18 +344,10 @@
             //Container Div For Individual Sorted Tweets
             const $containerDiv = $('<div></div>').attr('class', 'sorted-individual-tweet-container').css({'border': '2px solid ' + colorObj[accessTweet.user], 'background-color': alphaColor}).appendTo($currentTweetStack);
 
-            const $currentUserTime = $('<p></p>').attr('class', 'tweet-time').css({'background-color': colorObj[accessTweet.user], 'border': '2px solid white'}).text(fullDate).appendTo($containerDiv);
+            const $currentUserTime = $('<p></p>').attr({'class': 'tweet-time'}).css({'background-color': colorObj[accessTweet.user], 'border': '2px solid white'}).text(fullDate).appendTo($containerDiv);
 
             const $currentUserTweet = $('<p></p>').attr('class', 'sorted-tweet-list-li').css({'border': '2px solid white', 'background-color': alphaColor}).text(accessTweet.message).appendTo($containerDiv);
 
-            //Special Styling for First Sorted Tweet (bold)
-            // if (i === 0) {
-            //   $($containerDiv).attr('id', 'sorted-tweet-0')
-            // }
-            // //Special Styling for Last Sorted Tweet (round edges);
-            // if (i === 4) {
-            //   $($containerDiv).attr('id', 'sorted-tweet-4')
-            // }
             //Changes Color When Hovering over Sorted Tweets
             $containerDiv.hover(function() {
               $(this).css({'background-color': colorObj[accessTweet.user], 'border': '2px solid white'})
@@ -630,14 +632,17 @@
       //When the index exceeds the amount of tweets on initial tweet timeline setup then the program creates one more container that holds the 11th, or deprecating tweet.
       if (index === streams.home.length) {
         //The 11th Tweet Container
-        $('<div></div>').html(stylizeTweet('', '', '', index)).attr({'id': 'otc' + index, 'class': 'outer-tweet-container otc11'}).appendTo($tweetTimeline);
+        $('<div></div>').html(stylizeTweet('', '', '', index)).attr({'id': 'itc' + index, 'class': 'inner-tweet-container itc11'}).appendTo($tweetTimeline);
        break;
       }
 
-      //Outer Tweet Containers - - ->
+      //Inner Tweet Containers - - ->
       const accessTweet = streams.home[index];
 
-      $('<div></div>').html(stylizeTweet(accessTweet.user +': ', accessTweet.message, dateHandler(accessTweet.created_at), index)).attr({'id': 'otc' + index, 'class': 'outer-tweet-container'}).appendTo($tweetTimeline);
+      let $itc = $('<div></div>').html(stylizeTweet(accessTweet.user +': ', accessTweet.message, accessTweet.created_at, index).html()).attr({'id': 'itc' + index, 'class': 'inner-tweet-container ' + accessTweet.user}).appendTo($tweetTimeline);
+
+      $itc.data({'user': accessTweet.user + ': ', 'rawDate': accessTweet.created_at, 'message': accessTweet.message, 'color': colorObj[accessTweet.user]});
+
       index += 1;
       }
       //This Function adds Color to the Tweet Timeline Containers.
