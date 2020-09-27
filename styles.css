@@ -12,7 +12,7 @@ body {
 
 a {
   text-decoration: underline;
-  color: blue;
+  color:  #0000ff;
 }
 
 /*
@@ -21,7 +21,7 @@ Testing Tools
 =====================
 */
 .test-border-one {
-  border: 1px solid black;
+  border: 1px solid #000000;
   border-radius: 10px;
 }
 
@@ -42,7 +42,7 @@ Font
 .section-title {
   text-align: center;
   padding: 7.5px 0 10px 0;
-  border: 4px solid darkslategray;
+  border: 4px solid #2f4f4f;
   border-radius: 10px 10px 0 0;
   border-bottom: none;
 }
@@ -131,14 +131,14 @@ Tweet Timeline Section
   margin-top: 10px;
 }
 .tweet-timeline-title {
-  background-color: royalblue;
+  background-color: #4169e1;
   color: white;
-  border: 4px solid darkslategray;
+  border: 4px solid #2f4f4f;
   border-bottom: none;
 }
 
 .inner-tweet-container {
-  border: 4px solid darkslategray;
+  border: 4px solid #2f4f4f;
   border-top: none;
 }
 
@@ -154,7 +154,7 @@ Tweet Timeline Section
 }
 
 .inner-tweet-container a:hover {
-  color: white;
+  color: #FFFFFF;
   font-size: 26px;
 }
 
@@ -164,7 +164,7 @@ a.tweet-handle {
  }
 
  .hash-handle {
-   margin: 0;
+   margin: 0, 0, 0 5px;
  }
 
  .tweet-timeline-message {
@@ -173,13 +173,13 @@ a.tweet-handle {
 }
 
 #itc0 {
-  border-top: 4px solid darkslategray;
+  border-top: 4px solid #2f4f4f;
 }
 /*-The 11th Tweet-*/
 .itc11 {
   display: none;
   background-color: lightslategrey !important;
-  border: 4px solid darkslategray;
+  border: 4px solid #2f4f4f;
   border-top: none;
 }
 
@@ -190,13 +190,13 @@ a.tweet-handle {
 
 #itc11 p, #itc11 a {
   font-size: 12px;
-  color:lightgrey;
+  color: #fafad2;
   display: inline-block;
 }
 
 #itc11 .tweet-time {
   font-size: 10px;
-  padding-left: 5px;
+  margin: 0;
 }
 
 
@@ -221,8 +221,8 @@ a.tweet-handle {
 
  .sorted-name-timeline {
   display: none;
-  background-color: white;
-  border: 4px solid darkslategray;
+  background-color: #FFFFFF;
+  border: 4px solid #2f4f4f;
   border-radius: 0 0 10px 10px;
 }
 
@@ -257,7 +257,7 @@ a.tweet-handle {
 .sorted-tweet-list-li, .sorted-tag-list-li {
   font-size: 18px;
   font-style: italic;
-  color: white;
+  color: #FFFFFF;
   padding: 5px 10px;
   /* border-radius: 10px; */
 }
@@ -267,7 +267,7 @@ a.tweet-handle {
   font-size: 18px;
   margin: 0 0 0 25px;
   padding: 5px 10px;
-  color: white;
+  color: #FFFFFF;
   border-left: none;
   border-right: none;
 }
@@ -300,15 +300,15 @@ Hashtag Section
 /* Change to Display: none */
 .hashtag-name-declarations {
   display: none;
-  background-color: white;
+  background-color: #FFFFFF;
   border-radius: 0 0 10px 10px;
-  border: 4px solid darkslategray;
+  border: 4px solid #2f4f4f;
 }
 
 .hashtag-sorted-title {
   display: none;
   background-color: #FA8072;
-  color: white;
+  color: #FFFFFF;
   border: 4px solid darkslategray;
   border-bottom: none;
 }
@@ -371,7 +371,7 @@ Buttons
 
 .one-more-tweet-button:hover {
   background-color: #4169E1;
-  border: 4px solid white;
+  border: 4px solid #FFFFFF;
   font-size: 30px;
 }
 
