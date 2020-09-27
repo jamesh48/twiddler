@@ -3,6 +3,7 @@
   <head>
     <title>Twiddler</title>
     <link rel='stylesheet' href='styles.css'>
+    <link rel="icon" href = 'puzzlepieces.png'>
     <script src="jquery.js"></script>
     <script src="dataGenerator.js"></script>
     <script src='node_modules/timeago.js/dist/timeago.min.js' type='text/javascript'></script>
@@ -40,9 +41,14 @@
       //Hash Check - - ->
       const checkHash = function (message) {
         message = message.split('')
+        let hashCheckArr = message.filter(x => x === '#');
+        if (hashCheckArr.length > 1) {
+          return false;
+        }
         if (message.indexOf('#') !== -1) {
           message = message.splice(message.indexOf('#'));
           message = message.join('');
+
           //Checks to see if tag is already in tag array, returns if so.
           for ( let i = 0; i < tags.length; i++){
             if (tags[i] === message){
@@ -52,38 +58,45 @@
           //Other-wise adds the new tag to the tags array.
           tags.push(message)
         }
+        return true;
+      }
+
+      //limit280- - ->
+      const limit280 = function (event) {
+        let test= event.target.value.split('');
+        while (test.length > 280) {
+          test.pop();
+        }
+        $('.custom-user-tweet').val(test.join(''));
       }
 
       //xAmpersand- - ->
       const xAmpersand = function (event) {
-        if (event.shiftKey && event.keyCode === 50) {
+        if (event.shiftKey && (event.keyCode === 50 || event.keyCode === 186)) {
           let test = $('.custom-user-handle').val().split('');
+
+          //Removes All @ signs
           while (test.indexOf('@') !== -1) {
             test.splice(test.indexOf('@'), 1);
           }
+          //Removes all : signs
+          while (test.indexOf(':') !== -1) {
+            test.splice(test.indexOf('@'), 1);
+          }
+
           test = test.join('')
 
-          $('.custom-user-handle').val('').attr({'placeholder': 'No @ Sign Needed'}).css('color', 'lightslategrey')
+          const signedInTest = (/\(-signed in\)/g).test($('.custom-user-handle').val());
+
+          if (!signedInTest) {
+            $('.custom-user-handle').val('').attr({'placeholder': 'No @ or : Sign Needed'}).css('color', 'lightslategrey')
 
           setTimeout(function(){
             $('.custom-user-handle').val(test).css('color', 'black').attr('placeholder', 'Your Handle')
           }, 1000);
         }
       }
-
-      //validateHash- - ->
-      const validateHash = function (event) {
-
-        let test = $('.custom-user-input').val();
-        if (test) {
-          $('.custom-user-input').css('background-color', alphaTransparency(colorObj[visitor]));
-        }
-        test.split('');
-        if (test.indexOf('#') !== -1) {
-          $('.custom-user-handle').css('color', 'blue')
-        }
-      }
-
+    }
 
       //Alpha Transparency Color Function - - ->
       const alphaTransparency = function (user, indicator) {
@@ -92,6 +105,52 @@
         alphaColor = alphaColor.join('');
         return alphaColor;
       }
+
+      //Colorize Custom Tweet
+      const colorizeCustomForm = function ($customHandleAccess) {
+      //Replaces the colorObj "Custom User", dummy property with inputted visitor/color as property.
+      for (let key in colorObj) {
+        if (key === 'Custom User') {
+          let saveColor = colorObj[key];
+          delete colorObj[key];
+          colorObj[visitor] = saveColor;
+          const alphaColor = alphaTransparency(visitor);
+          $customHandleAccess.css({'background-color': alphaColor, 'color': '#FFFFFF'}).hover(function () {
+            $(this).css('background-color', colorObj[visitor]);
+            $('.cool-form').css('background-color', alphaColor)
+          }, function () {
+            $(this).css('background-color', alphaColor);
+            $customHandleAccess.css('background-color', alphaColor);
+            $('.cool-form').css('background-color', colorObj[visitor])
+          });
+
+          $('.cool-form').css({'border': '2px solid ' + alphaColor, 'background-color': alphaColor, 'box-shadow': '0 0 15px 4px ' + alphaColor}).hover(function() {
+            $(this).css('background-color', colorObj[visitor]);
+          }, function () {
+            $(this).css('background-color', alphaColor);
+          });
+
+          $('.custom-user-tweet').css({'background-color': alphaColor}).hover(function() {
+            $(this).css('background-color', colorObj[visitor])
+            $('.cool-form').css('background-color', alphaColor)
+          }, function () {
+            $(this).css('background-color', alphaColor);
+            $customHandleAccess.css('background-color', alphaColor);
+            $('.cool-form').css('background-color', colorObj[visitor])
+          });
+
+          $('.custom-user-tweet').addClass('color-white');
+          $('.submit-tweet-button').css({'background-color': alphaColor, 'color': 'white'}).hover(function () {
+            $(this).css('background-color', colorObj[visitor]);
+            $('.cool-form').css('background-color', alphaColor)
+          }, function () {
+            $(this).css('background-color', alphaColor);
+            $('.cool-form').css('background-color', colorObj[visitor])
+          })
+      }
+      $('.custom-user-tweet').val('');
+    }
+  }
 
       //Adds Color to the Tweet Timeline
       const tweetTimelineColors = function () {
@@ -136,67 +195,11 @@
 
       //Date Handler Function - - ->
       const dateHandler = function (tweetDate) {
-      // const time = tweetDate.toLocaleTimeString();
-      // const year = tweetDate.getFullYear();
-      // const month = tweetDate.getMonth();
-      // const date = tweetDate.getDate();
-      // const weekDay = tweetDate.getDay();
-
-      // let dateString = '';
-      // //Handling the Day of the Week - - ->
-      // if (weekDay === 0) {
-      //   dateString += 'Sun, ';
-      // } else if (weekDay === 1) {
-      //   dateString += 'Mon, ';
-      // } else if (weekDay === 2) {
-      //   dateString += 'Tues, ';
-      // } else if (weekDay === 3) {
-      //   dateString += 'Wed, ';
-      // } else if (weekDay === 4) {
-      //   dateString +=  'Thurs, ';
-      // } else if (weekDay === 5) {
-      //   dateString += 'Fri, ';
-      // } else if (weekDay === 6) {
-      //   dateString += 'Sat, ';
-      // } else if (weekDay === 7) {
-      //   dateString += 'Sun, '
-      // } else {
-      //   alert('weekday value not valid');
-      // }
-      // //Handling the Month
-      // if (month === 0) {
-      //   dateString += 'Jan ';
-      // } else if (month === 1) {
-      //   dateString += 'Feb ';
-      // } else if (month === 2) {
-      //   dateString += 'Mar ';
-      // } else if (month === 3) {
-      //   dateString += 'April ';
-      // } else if (month === 4) {
-      //   dateString += 'May ';
-      // } else if (month === 5) {
-      //   dateString += 'June ';
-      // } else if (month === 6) {
-      //   dateString += 'July ';
-      // } else if (month === 7) {
-      //   dateString += 'August ';
-      // } else if (month === 8) {
-      //   dateString += 'Sept ';
-      // } else if (month === 9) {
-      //   dateString += 'Oct ';
-      // } else if (month === 10) {
-      //   dateString += 'Nov ';
-      // } else if (month === 11) {
-      //   dateString += 'Dec ';
-      // } else {
-      //   alert('month value is not valid');
-      // }
         if (tweetDate === undefined) {
+          //For Debugging Use,,,
           return 'tweet date is undefined';
         }
       return timeago.format(tweetDate)
-
-      return dateString += (date + ', ' + year + ' || ' + time);
 }
 
       //Bold & Beautiful Function
@@ -218,19 +221,19 @@
         }
 
         //Saves the values, colors, and data of each tweet in the  Tweet Timeline into an Object.
-        const testObj = {};
-          testObj['user'] = {};
-          testObj['message'] = {};
-          testObj['color'] = {};
-          testObj['date'] = {};
+        const saverObj = {};
+          saverObj['user'] = {};
+          saverObj['message'] = {};
+          saverObj['color'] = {};
+          saverObj['date'] = {};
 
         for (let i = 0; i <= 11; i++) {
           const $currentItc = $('#itc' + i);
 
-          testObj['user'][i] = $currentItc.data('user');
-          testObj['message'][i] = $currentItc.data('message');
-          testObj['color'][i] = $currentItc.data('color');
-          testObj['date'][i] = $currentItc.data('rawDate')
+          saverObj['user'][i] = $currentItc.data('user');
+          saverObj['message'][i] = $currentItc.data('message');
+          saverObj['color'][i] = $currentItc.data('color');
+          saverObj['date'][i] = $currentItc.data('rawDate')
 
           //Introduces New Tweet
           if (i === 0) {
@@ -244,10 +247,10 @@
             //The rest of the tweets (itc1- itc11)
             //Accesses the preceeding tweet...
 
-            let prevHandle = testObj['user'][i - 1];
-            let prevMessage = testObj['message'][i - 1];
-            let prevColor = testObj['color'][i - 1];
-            let prevTime = testObj['date'][i - 1];
+            let prevHandle = saverObj['user'][i - 1];
+            let prevMessage = saverObj['message'][i - 1];
+            let prevColor = saverObj['color'][i - 1];
+            let prevTime = saverObj['date'][i - 1];
 
             $currentItc.html(stylizeTweet(prevHandle, prevMessage, prevTime).html()).css({'background-color': prevColor}).attr('class', 'inner-tweet-container ' + prevHandle);
             $currentItc.data({'user': prevHandle, 'rawDate': prevTime, 'message': prevMessage, 'color': prevColor});
@@ -439,7 +442,7 @@
           caps = saveTag;
       }
 
-          const $hashTagtitle = $('<h3></h3>').text('-- ' + caps + ' --').addClass('js-is-underlined').attr({'class': 'section-title hashtag-sorted-title', 'id': 'hashtag-sorted-title'}).appendTo($('.hashtag-timeline'));
+          const $hashTagtitle = $('<h3></h3>').text('-- #' + caps + ' --').addClass('js-is-underlined').attr({'class': 'section-title hashtag-sorted-title', 'id': 'hashtag-sorted-title'}).appendTo($('.hashtag-timeline'));
 
         //This for loop creates hashtag containers
         for (let i = 0; i < tags.length; i++) {
@@ -516,7 +519,7 @@
 
             const $containerDiv = $('<div></div>').css({'background-color': alphaColor, 'border': '2px solid ' + colorObj[accessTweet.user]}).attr('class', 'sorted-individual-tag-container ' + accessTweet.user).appendTo('#' + hashCheck + '-hashtag-stack');
 
-            const $currentDate = $('<p></p>').attr('class', 'tweet-time').text(dateHandler(accessTweet.created_at) + ', ').css({'background-color': colorObj[accessTweet.user], 'border': '2px solid white'}).appendTo($containerDiv);
+            const $currentDate = $('<p></p>').attr('class', 'tweet-time').text(dateHandler(accessTweet.created_at)).css({'background-color': colorObj[accessTweet.user], 'border': '2px solid white'}).appendTo($containerDiv);
 
             const $currentUserTweet = $('<p></p>').attr('class', 'sorted-tag-list-li').text(accessTweet.user + ': ' + accessTweet.message).css({'background-color': alphaColor, 'border': '2px solid white'}).appendTo($containerDiv);
 
@@ -554,47 +557,80 @@
       }
 
       const newCustomTweet = function (event) {
-      event[0].preventDefault();
-      const customHandleVal = $(arguments[0][1]).val();
-      const customHandleAccess = $(arguments[0][1]);
-      const customTweetVal = $(arguments[0][2]).val();
-      const $body = $(arguments[0][3])
+        event[0].preventDefault();
+        let $customHandleVal = $(arguments[0][1]).val();
+        const $customHandleAccess = $(arguments[0][1]);
+        const $customTweetVal = $(arguments[0][2]).val();
+        const $customTweetAccess = $(arguments[0][2]);
+        const $body = $(arguments[0][3])
 
-      if (!customHandleVal || !customTweetVal) {
-        alert('failed');
-        return;
-      }
+      //No Handle, and Tweet- Error Message
+      if (!$customHandleVal && $customTweetVal) {
+        let save = $customTweetVal;
 
-      const signedInTest = (/\(-signed in\)/g).test(customHandleVal);
+        $customTweetAccess.val('').attr('placeholder', '~Please Enter A User-Handle~')
 
-      if (!signedInTest) {
-        visitor = customHandleVal;
-        customHandleAccess.prop("readonly", true).val(customHandleVal + ' (-signed in)');
-      }
+        setTimeout(function(){
+            $customTweetAccess.val(save).attr('placeholder', 'Your Tweet');
+          }, 1500)
 
-      //Replaces the colorObj "Custom User", dummy property with inputted visitor/color as property.
-      for (let key in colorObj) {
-        if (key === 'Custom User') {
-          let saveColor = colorObj[key];
-          delete colorObj[key];
-          colorObj[visitor] = saveColor;
-          const alphaColor = alphaTransparency(visitor);
-          customHandleAccess.css({'background-color': alphaColor, 'color': '#FFFFFF'});
-          $('.cool-form').css({'border': '2px solid ' + alphaColor, 'background-color': colorObj[visitor],'box-shadow': '0 0 15px 4px ' + alphaColor});
-          $('.custom-user-tweet').css({'background-color': alphaColor});
-          $('.custom-user-tweet').addClass('color-white');
-          $('.submit-tweet-button').css({'background-color': alphaColor, 'color': 'white'})
+        return false;
+      //Handle But No Tweet, Signed In~
+      } else if (($customHandleVal && !$customTweetVal) || ($customHandleVal && $customTweetVal)) {
 
-      }
-      $('.custom-user-tweet').val('');
-    }
-        //This part checks to see if there is a hash tag and if there is, it adds the tag to the taglist.
-        checkHash(customTweetVal);
-        writeTweet(customTweetVal)
-        moreTweets(true, $body)
 
+        //Handle and Tweet, Sign in and Post
+        const signedInTest = (/\(-signed in\)/g).test($customHandleVal);
+
+        if (!signedInTest) {
+          $customHandleVal = $customHandleVal.split('');
+          //Removes Ampersand if one slips through.
+            while ($customHandleVal.indexOf('@') !== -1) {
+              $customHandleVal.splice($customHandleVal.indexOf('@'), 1)
+            }
+            while ($customHandleVal.indexOf(':') !== -1) {
+              $customHandleVal.splice($customHandleVal.indexOf(':'), 1)
+            }
+            $customHandleVal = $customHandleVal.join('')
+          //This conditional Accounts for if the input is still somehow empty
+          if (!$customHandleVal) {
+           return;
+          }
+          colorizeCustomForm($customHandleAccess);
+          visitor = $customHandleVal;
+
+          $customHandleAccess.prop("readonly", true).val($customHandleVal + ' (-signed in)');
+        }
+        //If there is a handle and tweet- enters into the stack.
+        if ($customTweetVal) {
+          colorizeCustomForm($customHandleAccess);
+
+          //This part checks to see if there is a hash tag and if there is, it adds the tag to the taglist.
+          let test = checkHash($customTweetVal);
+          //This Checks to see if there is more than on hashtag, not currently supported
+          if (!test) {
+            $customTweetAccess.attr('placeholder', '~Multiple Hashtags Not Currently Supported~')
+
+            setTimeout(function(){
+            $customTweetAccess.attr('placeholder', 'Your Tweet')
+            }, 2100);
+
+            return true;
+          }
+          writeTweet($customTweetVal)
+          moreTweets(true, $body)
+        } else {
+          $customTweetAccess.attr('placeholder', '~Please Enter A Tweet~');
+
+          setTimeout(function(){
+            $customTweetAccess.attr('placeholder', 'Your Tweet')
+          }, 1500);
+        }
         //Makes links clickable-
         $('a').on('click', activateLink);
+        //Returning True Focuses the Cursor on Custom Tweet Input
+        return true;
+        }
       }
 
     //Document.ready function- - ->
@@ -603,20 +639,34 @@
       $body.html('');
 
       //Custom Tweet Message Section - - ->
+      const $customTweetContainer = $('<div></div>').attr('class', 'custom-tweet-container').appendTo($body)
+
       const $customTweetForm = $('<form></form>').attr('class', 'cool-form').submit(function(event) {
           event.preventDefault();
-          newCustomTweet([event, $userHandleInput, $userTweetInput, $body])
-      }).appendTo($body);
+          let test = newCustomTweet([event, $userHandleInput, $userTweetInput, $body])
+          if (!test) {
+            $userHandleInput.focus();
+            return;
+          } else {
+            //Moves Cursor to Tweet Input
+            $userTweetInput.focus();
+            return;
+          }
+      }).appendTo($customTweetContainer);
 
       const $userEntryContainerDiv = $('<div></div>').appendTo($customTweetForm).attr('class', 'custom-user-input');
 
       const $userHandleInput = $('<input></input>').attr({'class': 'custom-user-handle', 'placeholder': 'Your Handle'}).appendTo($userEntryContainerDiv);
 
-      $userHandleInput.keyup(function(event) {
-        xAmpersand(event);
-      });
+      $userHandleInput.keyup(function (event) {
+            xAmpersand(event)
+      })
 
       const $userTweetInput = $('<input></input>').attr({'class': 'custom-user-tweet', 'placeholder': 'Your Tweet'}).appendTo($userEntryContainerDiv);
+
+      $userTweetInput.keyup(function(event) {
+        limit280(event);
+      })
 
       const $userEntryButton = $('<button></buton>').attr('class', 'submit-tweet-button').text('Submit Tweet').appendTo($userEntryContainerDiv);
 
