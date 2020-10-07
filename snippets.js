@@ -12,4 +12,4 @@
 
      $('#itc' + i).html(oldTweet).css({'background-color': colorSaverArray[i - 1]});
 
-     //Testing Code Server commit #2
+     //Testing Code Server commit #3
