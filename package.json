@@ -1,0 +1,25 @@
+{
+  "name": "seip2010-twiddler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dataGenerator.js",
+  "dependencies": {
+    "timeago.js": "^4.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jamesh48/seip2010-twiddler.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jamesh48/seip2010-twiddler/issues"
+  },
+  "homepage": "https://github.com/jamesh48/seip2010-twiddler#readme"
+}
